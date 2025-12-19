@@ -1,0 +1,61 @@
+syntax = "proto3";
+
+package sovereign.config;
+
+import "google/protobuf/duration.proto";
+
+option go_package = "github.com/aide-family/sovereign/pkg/config;config";
+
+message ClientConfig {
+	ClusterConfig cluster = 1;
+	string jwtToken = 2;
+	ETCDConfig etcd = 3;
+	KubernetesConfig kubernetes = 4;
+	RegistryType registryType = 5;
+	string namespace = 6;
+}
+
+message ClusterConfig {
+	enum Protocol {
+		PROTOCOL_UNKNOWN = 0;
+		GRPC = 1;
+		HTTP = 2;
+	}
+	string name = 1;
+	string endpoints = 2;
+	google.protobuf.Duration timeout = 3;
+	Protocol protocol = 4;
+}
+
+message ETCDConfig {
+	string endpoints = 1;
+	string username = 2;
+	string password = 3;
+}
+
+message MySQLConfig {
+	string username = 1;
+	string password = 2;
+	string host     = 3;
+	int32 port     = 4;
+	string database = 5;
+	string debug = 6;
+	string useSystemLogger = 7;
+	map<string, string> parameters = 8;
+}
+
+message KubernetesConfig {
+	string kubeConfig = 1;
+}
+
+enum RegistryType {
+	UNKNOWN = 0;
+	ETCD = 1;
+	KUBERNETES = 2;
+}
+
+message BasicAuthConfig {
+	string username = 1;
+	string password = 2;
+	string enabled = 3;
+}

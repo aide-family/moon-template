@@ -1,0 +1,75 @@
+// Package all is the all command for the Sovereign service
+package all
+
+import (
+	"strings"
+	"sync"
+
+	"github.com/aide-family/magicbox/hello"
+	klog "github.com/go-kratos/kratos/v2/log"
+	"github.com/spf13/cobra"
+
+	"github.com/aide-family/sovereign/cmd"
+	"github.com/aide-family/sovereign/cmd/run"
+	"github.com/aide-family/sovereign/cmd/run/grpc"
+	"github.com/aide-family/sovereign/cmd/run/http"
+)
+
+const cmdAllLong = `Start the Sovereign service with all services (HTTP, gRPC).
+
+The server command starts all services together:
+  • HTTP service: Provides RESTful API interfaces for message delivery and management
+  • gRPC service: Provides high-performance gRPC API interfaces for inter-service communication
+
+Sovereign is a distributed messaging platform built on the Kratos framework, supporting unified
+management and delivery of multiple services. It implements multi-tenant isolation through namespaces
+and supports both file-based and database storage modes to meet different deployment requirements.
+
+Key Features:
+  • Multi-service management: Unified management of multiple services
+  • Configuration management: Centralized management of service configurations
+  • Multi-tenant isolation: Namespace-based isolation of configurations and data for different businesses or tenants
+
+Use Cases:
+  • All-in-one deployment: Deploy all services together for simple deployment scenarios
+  • Development and testing: Quick start for development and testing environments
+  • Small to medium deployments: Suitable for deployments that don't require service separation
+
+Note: For production environments requiring service separation, consider using the http, grpc
+commands to start services independently for better scalability and resource management.
+
+After starting the service, Sovereign will listen on the configured ports:
+  • HTTP: Default 0.0.0.0:8080 (configurable via --http-address)
+  • gRPC: Default 0.0.0.0:9090 (configurable via --grpc-address)
+`
+
+func NewCmd() *cobra.Command {
+	runCmd := &cobra.Command{
+		Use:   "all",
+		Short: "Run the Sovereign all services",
+		Long:  cmdAllLong,
+		Annotations: map[string]string{
+			"group": cmd.ServiceCommands,
+		},
+		Run: runAll,
+	}
+
+	flags.addFlags(runCmd)
+	return runCmd
+}
+
+func runAll(_ *cobra.Command, _ []string) {
+	if err := flags.applyToBootstrap(); err != nil {
+		klog.Errorw("msg", "apply to bootstrap failed", "error", err)
+		return
+	}
+	hello.Hello()
+	wg := new(sync.WaitGroup)
+	wg.Go(func() {
+		run.StartServer(strings.Join([]string{flags.Name, flags.Server.Name, "http"}, "."), http.WireApp)
+	})
+	wg.Go(func() {
+		run.StartServer(strings.Join([]string{flags.Name, flags.Server.Name, "grpc"}, "."), grpc.WireApp)
+	})
+	wg.Wait()
+}

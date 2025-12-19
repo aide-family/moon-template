@@ -28,5 +28,20 @@ go.work.sum
 .env
 
 # Editor/IDE
-# .idea/
-# .vscode/
+.idea/
+.vscode/
+.DS_Store
+
+description.txt
+
+# generated files
+*.pb.go
+*_gen.go
+
+
+# deploy
+deploy/*/data
+description.txt
+.rabbit/
+*.log
+*__string.go
