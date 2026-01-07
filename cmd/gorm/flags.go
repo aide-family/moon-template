@@ -36,7 +36,7 @@ func (f *Flags) addFlags(c *cobra.Command) {
 	c.PersistentFlags().StringVar(&f.password, "password", "123456", "mysql password")
 	c.PersistentFlags().StringVar(&f.host, "host", "localhost", "mysql host")
 	c.PersistentFlags().Int32Var(&f.port, "port", 3306, "mysql port")
-	c.PersistentFlags().StringVar(&f.database, "database", "sovereign", "mysql database")
+	c.PersistentFlags().StringVar(&f.database, "database", "rabbit", "mysql database")
 	c.PersistentFlags().StringSliceVar(&f.params, "params", []string{"charset=utf8mb4", "parseTime=true", "loc=Asia/Shanghai"}, "mysql params")
 	c.PersistentFlags().BoolVarP(&f.isBiz, "biz", "b", false, "is biz")
 }

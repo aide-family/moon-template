@@ -1,8 +1,8 @@
 //go:build wireinject
 // +build wireinject
 
-// Package http is the http command for the Sovereign service
-package http
+// Package all is the all command for the Sovereign service
+package all
 
 import (
 	"github.com/go-kratos/kratos/v2"
@@ -20,7 +20,7 @@ import (
 
 func WireApp(serviceName string, bc *conf.Bootstrap, helper *klog.Helper) (*kratos.App, func(), error) {
 	panic(wire.Build(
-		server.ProviderSetServerHTTP,
+		server.ProviderSetServerAll,
 		service.ProviderSetService,
 		biz.ProviderSetBiz,
 		impl.ProviderSetImpl,

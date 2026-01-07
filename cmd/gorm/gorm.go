@@ -1,4 +1,4 @@
-// Package gorm is the gorm package for the Sovereign service
+// Package gorm is the gorm package for the Rabbit service
 package main
 
 import (

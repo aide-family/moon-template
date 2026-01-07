@@ -56,6 +56,9 @@ func (f *Flags) applyToBootstrap() error {
 	if f.grpcTimeout > 0 {
 		f.Server.Grpc.Timeout = durationpb.New(f.grpcTimeout)
 	}
-
+	f.EnableSwagger = strconv.FormatBool(f.enableSwagger)
+	f.SwaggerBasicAuth.Enabled = strconv.FormatBool(f.enableSwaggerBasicAuth)
+	f.EnableMetrics = strconv.FormatBool(f.enableMetrics)
+	f.MetricsBasicAuth.Enabled = strconv.FormatBool(f.enableMetricsBasicAuth)
 	return nil
 }
