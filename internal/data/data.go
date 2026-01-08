@@ -13,6 +13,7 @@ import (
 	"github.com/go-kratos/kratos/contrib/registry/etcd/v2"
 	kuberegistry "github.com/go-kratos/kratos/contrib/registry/kubernetes/v2"
 	klog "github.com/go-kratos/kratos/v2/log"
+	"github.com/go-kratos/kratos/v2/registry"
 	"github.com/google/wire"
 	clientV3 "go.etcd.io/etcd/client/v3"
 	"gorm.io/gorm"
@@ -40,7 +41,7 @@ func New(c *conf.Bootstrap, helper *klog.Helper) (*Data, func(), error) {
 	if err := d.initRegistry(); err != nil {
 		return nil, d.close, err
 	}
-	mainDB, err := connect.NewGorm(d.c.GetMain(), d.helper)
+	mainDB, err := connect.NewDB(d.c.GetMain(), d.helper)
 	if err != nil {
 		return nil, d.close, err
 	}
@@ -48,7 +49,7 @@ func New(c *conf.Bootstrap, helper *klog.Helper) (*Data, func(), error) {
 	d.closes.Set("mainDB", func() error { return connect.CloseDB(mainDB) })
 
 	for namespace, biz := range d.c.GetBiz() {
-		db, err := connect.NewGorm(biz, d.helper)
+		db, err := connect.NewDB(biz, d.helper)
 		if err != nil {
 			return nil, d.close, err
 		}
@@ -74,12 +75,17 @@ func New(c *conf.Bootstrap, helper *klog.Helper) (*Data, func(), error) {
 	return d, d.close, nil
 }
 
+type Registry interface {
+	registry.Registrar
+	registry.Discovery
+}
+
 type Data struct {
 	helper      *klog.Helper
 	c           *conf.Bootstrap
 	dbs         *safety.SyncMap[string, *gorm.DB]
 	mainDB      *gorm.DB
-	registry    connect.Registry
+	registry    Registry
 	cache       cache.Interface
 	closes      *safety.SyncMap[string, func() error] // 使用SyncMap保证并发安全
 	reloadFuncs *safety.SyncMap[string, func()]
@@ -130,7 +136,7 @@ func (d *Data) BizDB(ctx context.Context, namespace string) *gorm.DB {
 	return d.mainDB.WithContext(ctx)
 }
 
-func (d *Data) Registry() connect.Registry {
+func (d *Data) Registry() Registry {
 	return d.registry
 }
 

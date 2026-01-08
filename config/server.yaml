@@ -29,17 +29,21 @@ jwt:
   issuer: "${MOON_SOVEREIGN_JWT_ISSUER:sovereign}"
 
 main:
-  username: "${MOON_SOVEREIGN_MAIN_USERNAME:root}"
-  password: "${MOON_SOVEREIGN_MAIN_PASSWORD:123456}"
-  host: "${MOON_SOVEREIGN_MAIN_HOST:localhost}"
-  port: ${MOON_SOVEREIGN_MAIN_PORT:3306}
-  database: ${MOON_SOVEREIGN_MAIN_DATABASE:sovereign}
+  dialector: MYSQL
   debug: ${MOON_SOVEREIGN_MAIN_DEBUG:false}
   useSystemLogger: ${MOON_SOVEREIGN_MAIN_USE_SYSTEM_LOGGER:true}
-  parameters:
-    charset: utf8mb4
-    parseTime: "true"
-    loc: Asia/Shanghai
+  options:
+    '@type': type.googleapis.com/sovereign.config.MySQLOptions
+    username: "${MOON_SOVEREIGN_MAIN_USERNAME:root}"
+    password: "${MOON_SOVEREIGN_MAIN_PASSWORD:123456}"
+    host: "${MOON_SOVEREIGN_MAIN_HOST:localhost}"
+    port: ${MOON_SOVEREIGN_MAIN_PORT:3306}
+    database: ${MOON_SOVEREIGN_MAIN_DATABASE:sovereign}
+    parameters:
+      charset: utf8mb4
+      parseTime: "true"
+      loc: Asia/Shanghai
+    dsn: "${MOON_SOVEREIGN_MAIN_DSN:file:./sovereign.db?cache=shared}"
 
 registryType: ${MOON_SOVEREIGN_REGISTRY_TYPE:}
 

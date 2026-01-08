@@ -11,7 +11,7 @@ type Namespace struct {
 
 	Name     string                      `gorm:"column:name;type:varchar(100);not null;uniqueIndex"`
 	Metadata *safety.Map[string, string] `gorm:"column:metadata;type:json;"`
-	Status   vobj.GlobalStatus           `gorm:"column:status;type:tinyint(2);not null;default:0"`
+	Status   vobj.GlobalStatus           `gorm:"column:status;type:integer;not null;default:0"`
 }
 
 func (Namespace) TableName() string {

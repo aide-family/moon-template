@@ -45,3 +45,6 @@ description.txt
 .rabbit/
 *.log
 *__string.go
+
+# database
+*.db

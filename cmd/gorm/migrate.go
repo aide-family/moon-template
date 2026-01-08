@@ -40,7 +40,7 @@ func newMigrateCmd() *cobra.Command {
 		Run: func(cmd *cobra.Command, args []string) {
 			db, err := initDB()
 			if err != nil {
-				klog.Errorw("msg", "init db failed", "error", err)
+				klog.Warnw("msg", "init db failed", "error", err)
 				return
 			}
 			migrate(db)
@@ -50,7 +50,6 @@ func newMigrateCmd() *cobra.Command {
 
 func migrate(db *gorm.DB) {
 	tables := do.Models()
-	klog.Debugw("msg", "migrate database", "tables", tables)
 	if err := db.Migrator().AutoMigrate(tables...); err != nil {
 		klog.Errorw("msg", "migrate database failed", "error", err, "tables", tables)
 		return

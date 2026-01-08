@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package sovereign.config;
 
+import "google/protobuf/any.proto";
 import "google/protobuf/duration.proto";
 
 option go_package = "github.com/aide-family/sovereign/pkg/config;config";
@@ -33,15 +34,29 @@ message ETCDConfig {
 	string password = 3;
 }
 
-message MySQLConfig {
+message ORMConfig {
+	enum Dialector {
+		TYPE_UNKNOWN = 0;
+		MYSQL = 1;
+		SQLITE = 2;
+	}
+	Dialector dialector = 1;
+	google.protobuf.Any options = 2;
+	string debug = 3;
+	string useSystemLogger = 4;
+}
+
+message MySQLOptions {
 	string username = 1;
 	string password = 2;
 	string host     = 3;
 	int32 port     = 4;
 	string database = 5;
-	string debug = 6;
-	string useSystemLogger = 7;
-	map<string, string> parameters = 8;
+	map<string, string> parameters = 6;
+}
+
+message SQLiteOptions {
+	string dsn = 1;
 }
 
 message KubernetesConfig {

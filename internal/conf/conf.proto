@@ -12,8 +12,8 @@ message Bootstrap {
 	sovereign.enum.Environment environment = 1;
 	Server server = 2;
 	JWT jwt = 3;
-    sovereign.config.MySQLConfig main = 4;
-    map<string, sovereign.config.MySQLConfig> biz = 5;
+    sovereign.config.ORMConfig main = 4;
+    map<string, sovereign.config.ORMConfig> biz = 5;
 	sovereign.config.BasicAuthConfig swaggerBasicAuth = 6;
 	sovereign.config.BasicAuthConfig metricsBasicAuth = 7;
 	string enableSwagger = 8;
