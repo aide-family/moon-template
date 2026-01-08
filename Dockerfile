@@ -43,7 +43,7 @@ COPY --from=builder /moon/bin/sovereign /usr/local/bin/sovereign
 RUN chmod +x /usr/local/bin/sovereign
 
 # 暴露端口（根据实际配置调整）
-EXPOSE 10070 10080 10090 
+EXPOSE 10070 18080 19090 
 
 # 运行应用
 ENTRYPOINT ["/usr/local/bin/sovereign"]

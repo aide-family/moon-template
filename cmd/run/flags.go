@@ -18,22 +18,18 @@ import (
 
 	"github.com/aide-family/sovereign/cmd"
 	"github.com/aide-family/sovereign/internal/conf"
-	"github.com/aide-family/sovereign/pkg/config"
 	"github.com/aide-family/sovereign/pkg/enum"
-	"github.com/aide-family/sovereign/pkg/merr"
 )
 
 type RunFlags struct {
 	*conf.Bootstrap
 	*cmd.GlobalFlags
 
-	metadata        []string
-	useRandomID     bool
-	configPaths     []string
-	environment     string
-	jwtExpire       string
-	clusterTimeout  time.Duration
-	clusterProtocol string
+	metadata    []string
+	useRandomID bool
+	configPaths []string
+	environment string
+	jwtExpire   string
 }
 
 var runFlags RunFlags
@@ -56,10 +52,6 @@ func (f *RunFlags) addFlags(c *cobra.Command, bc *conf.Bootstrap) {
 	c.PersistentFlags().StringVar(&f.Jwt.Secret, "jwt-secret", f.Jwt.Secret, `Example: --jwt-secret="xxx"`)
 	c.PersistentFlags().StringVar(&f.jwtExpire, "jwt-expire", f.Jwt.Expire.AsDuration().String(), `Example: --jwt-expire="10s", --jwt-expire="1m", --jwt-expire="1h", --jwt-expire="1d"`)
 	c.PersistentFlags().StringVar(&f.Jwt.Issuer, "jwt-issuer", f.Jwt.Issuer, `Example: --jwt-issuer="xxx"`)
-	c.PersistentFlags().StringVar(&f.Cluster.Endpoints, "cluster-endpoints", f.Cluster.Endpoints, `Example: --cluster-endpoints="127.0.0.1:2379"`)
-	c.PersistentFlags().StringVar(&f.Cluster.Name, "cluster-name", f.Cluster.Name, `Example: --cluster-name="moon.sovereign"`)
-	c.PersistentFlags().DurationVar(&f.clusterTimeout, "cluster-timeout", f.Cluster.Timeout.AsDuration(), `Example: --cluster-timeout="10s"`)
-	c.PersistentFlags().StringVar(&f.clusterProtocol, "cluster-protocol", f.Cluster.Protocol.String(), `Example: --cluster-protocol="GRPC"`)
 }
 
 func (f *RunFlags) ApplyToBootstrap() error {
@@ -118,16 +110,6 @@ func (f *RunFlags) ApplyToBootstrap() error {
 		}
 	}
 
-	if f.clusterTimeout > 0 {
-		f.Cluster.Timeout = durationpb.New(f.clusterTimeout)
-	}
-	if strutil.IsNotEmpty(f.clusterProtocol) {
-		protocolValue, ok := config.ClusterConfig_Protocol_value[strings.ToUpper(f.clusterProtocol)]
-		if !ok || protocolValue == int32(config.ClusterConfig_PROTOCOL_UNKNOWN) {
-			return merr.ErrorInternal("invalid cluster protocol: %s", f.clusterProtocol)
-		}
-		f.Cluster.Protocol = config.ClusterConfig_Protocol(protocolValue)
-	}
 	return nil
 }
 

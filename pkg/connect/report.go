@@ -1,6 +1,7 @@
 package connect
 
 import (
+	"github.com/aide-family/magicbox/load"
 	"github.com/aide-family/magicbox/pointer"
 	"github.com/aide-family/magicbox/strutil"
 	"github.com/go-kratos/kratos/contrib/registry/etcd/v2"
@@ -10,10 +11,15 @@ import (
 	clientV3 "go.etcd.io/etcd/client/v3"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/anypb"
+	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/rest"
+	"k8s.io/client-go/tools/clientcmd"
 
 	"github.com/aide-family/sovereign/pkg/config"
 	"github.com/aide-family/sovereign/pkg/merr"
 )
+
+const defaultKubeConfig = "~/.kube/config"
 
 func init() {
 	globalRegistry.RegisterReportFactory(config.ReportConfig_KUBERNETES, buildReportFromKubernetes)
@@ -25,6 +31,9 @@ type Report interface {
 	registry.Discovery
 }
 
+// NewReport creates a new report.
+// If the report factory is not registered, it will return an error.
+// The report is not closed, you need to call the returned function to close the report.
 func NewReport(c *config.ReportConfig, logger *klog.Helper) (Report, func() error, error) {
 	factory, ok := globalRegistry.GetReportFactory(c.GetReportType())
 	if !ok {
@@ -40,12 +49,23 @@ func buildReportFromKubernetes(c *config.ReportConfig, logger *klog.Helper) (Rep
 			return nil, nil, merr.ErrorInternalServer("unmarshal kubernetes config failed: %v", err)
 		}
 	}
-	kubeClient, err := NewKubernetesClientSet(kubeConfig.GetKubeConfig())
+	configPath := kubeConfig.GetKubeConfig()
+	restConfig, err := rest.InClusterConfig()
+	if err != nil {
+		if configPath == "" {
+			configPath = defaultKubeConfig
+		}
+		restConfig, err = clientcmd.BuildConfigFromFlags("", load.ExpandHomeDir(configPath))
+		if err != nil {
+			return nil, nil, merr.ErrorInternalServer("build kubernetes config failed: %v", err)
+		}
+	}
+	clientSet, err := kubernetes.NewForConfig(restConfig)
 	if err != nil {
 		return nil, nil, merr.ErrorInternalServer("create kubernetes client set failed: %v", err)
 	}
 
-	return kuberegistry.NewRegistry(kubeClient, c.GetNamespace()), func() error { return nil }, nil
+	return kuberegistry.NewRegistry(clientSet, c.GetNamespace()), func() error { return nil }, nil
 }
 
 func buildReportFromEtcd(c *config.ReportConfig, logger *klog.Helper) (Report, func() error, error) {

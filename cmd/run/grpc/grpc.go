@@ -9,37 +9,12 @@ import (
 	"github.com/aide-family/sovereign/cmd/run"
 )
 
-const cmdGRPCLong = `Start the Sovereign gRPC service only, providing high-performance gRPC API interfaces for message delivery and management.
-
-The grpc command starts only the gRPC server component, which provides:
-  • Message sending: Send messages through various channels (email, Webhook, SMS, etc.)
-  • Configuration management: Manage channel configurations and templates
-  • Message query: Query message logs and delivery status
-  • Health check: Service health status monitoring
-
-Key Features:
-  • gRPC API: High-performance gRPC API interfaces with Protocol Buffers
-  • Efficient serialization: Binary Protocol Buffers for efficient data transfer
-  • Streaming support: Support for streaming RPC calls for real-time data
-  • Multi-tenant support: Namespace-based isolation
-  • JWT authentication: Secure API access with JWT tokens
-
-Use Cases:
-  • Microservices communication: Deploy gRPC service for inter-service communication in microservices architecture
-  • High-performance scenarios: Use gRPC for high-throughput message delivery with low latency
-  • Service mesh: Integrate gRPC service into service mesh architecture (Istio, Linkerd, etc.)
-  • Internal services: Provide gRPC API for internal service-to-service communication
-
-Note: This command only starts the gRPC service. For asynchronous message processing, you need to
-start the job service separately using the "sovereign job" command.
-
-After starting the service, Sovereign gRPC will listen on the configured gRPC port (default: 0.0.0.0:10090,
-configurable via --grpc-address) and provide gRPC API interfaces for client access.`
+const cmdGRPCLong = `Start the Sovereign gRPC service only`
 
 func NewCmd() *cobra.Command {
 	runCmd := &cobra.Command{
 		Use:   "grpc",
-		Short: "Run the Sovereign gRPC service only",
+		Short: "Start the Sovereign gRPC service only",
 		Long:  cmdGRPCLong,
 		Annotations: map[string]string{
 			"group": cmd.ServiceCommands,
@@ -49,7 +24,7 @@ func NewCmd() *cobra.Command {
 				klog.Errorw("msg", "apply to bootstrap failed", "error", err)
 				return
 			}
-			run.NewEngine(run.NewEndpoint("grpc", WireApp)).Start()
+			run.NewEngine(run.NewEndpoint(WireApp)).Start()
 		},
 	}
 

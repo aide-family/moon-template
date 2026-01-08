@@ -87,7 +87,33 @@ func init() {
 	encoding.RegisterCodec(newProtoYAMLCodec())
 }
 
-type Servers []transport.Server
+type Server interface {
+	transport.Server
+	Name() string
+	Instance() transport.Server
+}
+
+type server struct {
+	transport.Server
+	name string
+}
+
+func (s *server) Name() string {
+	return s.name
+}
+
+func (s *server) Instance() transport.Server {
+	return s.Server
+}
+
+func newServer(name string, srv transport.Server) Server {
+	return &server{
+		Server: srv,
+		name:   name,
+	}
+}
+
+type Servers []Server
 
 func BindSwagger(httpSrv *http.Server, bc *conf.Bootstrap, helper *klog.Helper) {
 	if !strings.EqualFold(bc.GetEnableSwagger(), "true") {
@@ -167,7 +193,7 @@ func RegisterHTTPService(
 ) Servers {
 	apiv1.RegisterHealthHTTPServer(httpSrv, healthService)
 	apiv1.RegisterNamespaceHTTPServer(httpSrv, namespaceService)
-	return Servers{httpSrv}
+	return Servers{newServer("http", httpSrv)}
 }
 
 // RegisterGRPCService registers only gRPC service.
@@ -179,7 +205,7 @@ func RegisterGRPCService(
 ) Servers {
 	apiv1.RegisterHealthServer(grpcSrv, healthService)
 	apiv1.RegisterNamespaceServer(grpcSrv, namespaceService)
-	return Servers{grpcSrv}
+	return Servers{newServer("grpc", grpcSrv)}
 }
 
 var namespaceAllowList = []string{

@@ -35,15 +35,15 @@ func New(c *conf.Bootstrap, helper *klog.Helper) (*Data, func(), error) {
 	if err := d.initRegistry(); err != nil {
 		return nil, d.close, err
 	}
-	mainDB, err := connect.NewDB(d.c.GetMain(), d.helper)
+	mainDB, closer, err := connect.NewDB(d.c.GetMain(), d.helper)
 	if err != nil {
 		return nil, d.close, err
 	}
 	d.mainDB = mainDB
-	d.closes.Set("mainDB", func() error { return connect.CloseDB(mainDB) })
+	d.closes.Set("mainDB", closer)
 
 	for namespace, biz := range d.c.GetBiz() {
-		db, err := connect.NewDB(biz, d.helper)
+		db, closer, err := connect.NewDB(biz, d.helper)
 		if err != nil {
 			return nil, d.close, err
 		}
@@ -52,10 +52,8 @@ func New(c *conf.Bootstrap, helper *klog.Helper) (*Data, func(), error) {
 			d.dbs.Set(ns, db)
 		}
 
-		// 使用局部变量避免闭包捕获问题
 		namespaceKey := "bizDB.[" + namespace + "]"
-		dbToClose := db
-		d.closes.Set(namespaceKey, func() error { return connect.CloseDB(dbToClose) })
+		d.closes.Set(namespaceKey, closer)
 	}
 
 	cacheDriver := mem.CacheDriver()

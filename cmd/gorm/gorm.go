@@ -18,30 +18,7 @@ import (
 	"github.com/aide-family/sovereign/pkg/merr"
 )
 
-const cmdLong = `GORM code generation and database migration tools for Sovereign service.
-
-The gorm command provides database-related utilities for the Sovereign service, including
-automatic code generation for data models and repositories, as well as database schema
-migration capabilities.
-
-Key Features:
-  • Code generation: Automatically generate GORM query code, models, and repository interfaces
-  • Database migration: Automatically migrate database schemas based on model definitions
-  • Database management: Support for database creation and connection management
-  • Type-safe queries: Generate type-safe query methods for database operations
-
-Subcommands:
-  • gen      Generate GORM query code for models and repositories
-  • migrate  Migrate database tables based on model definitions
-
-Use Cases:
-  • Initial setup: Generate database models and perform initial schema migration
-  • Schema updates: Migrate database when model definitions change
-  • Code generation: Automatically generate type-safe query code from database models
-  • Development workflow: Streamline database operations during development
-
-Use 'sovereign gorm gen' to generate model and repository code, and 'sovereign gorm migrate'
-to migrate the database schema.`
+const cmdLong = `GORM code generation and database migration tools for Sovereign service`
 
 func init() {
 	logger, err := log.NewLogger(stdio.LoggerDriver())
@@ -76,7 +53,7 @@ func NewCmd() *cobra.Command {
 	return runCmd
 }
 
-func initDB() (*gorm.DB, error) {
+func initDB() (*gorm.DB, func() error, error) {
 	flags.GlobalFlags = cmd.GetGlobalFlags()
 
 	var bc conf.Bootstrap
@@ -88,22 +65,22 @@ func initDB() (*gorm.DB, error) {
 		))
 		if err := c.Load(); err != nil {
 			klog.Errorw("msg", "load config failed", "error", err)
-			return nil, err
+			return nil, nil, err
 		}
 
 		if err := c.Scan(&bc); err != nil {
 			klog.Errorw("msg", "scan config failed", "error", err)
-			return nil, err
+			return nil, nil, err
 		}
 	}
 	flags.applyToBootstrap(&bc)
 
-	db, err := connect.NewDB(flags.ormConfig, klog.NewHelper(klog.GetLogger()))
+	db, closer, err := connect.NewDB(flags.ormConfig, klog.NewHelper(klog.GetLogger()))
 	if err != nil {
 		klog.Errorw("msg", "new db failed", "error", err)
-		return nil, err
+		return nil, nil, err
 	}
-	return db.Debug(), nil
+	return db.Debug(), closer, nil
 }
 
 func main() {

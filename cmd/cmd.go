@@ -30,23 +30,6 @@ const (
 
 const cmdLong = `Sovereign (太阴星君) is the service governance platform for the Moon platform, providing unified service governance capabilities.
 
-Sovereign is a distributed service governance platform built on the Kratos framework, supporting unified
-management and delivery of multiple services.
-It implements multi-tenant isolation through namespaces and supports both file-based and
-database storage modes to meet different deployment requirements.
-Core Capabilities:
-  • Service governance: Unified management of services
-  • Multi-tenant isolation: Namespace-based isolation of configurations and data for different businesses or tenants
-  • Command-line tools: Rich CLI commands for service management, configuration generation, and more
-Command Categories:
-  • Basic Commands: config, version, and other basic operations
-  • Service Commands: run and other service management operations
-  • Code Commands: gorm for code generation and database migration
-  • Database Commands: database management and migration
-Use Cases:
-  • Enterprise service governance: Unified management of business services
-  • Microservices service center: Provide unified service governance capabilities for microservices architecture
-  • Development and testing tools: Quickly test service governance configurations and functionality via CLI
 Use "sovereign [command] --help" to view detailed information about a specific command.`
 
 func NewCmd() *cobra.Command {

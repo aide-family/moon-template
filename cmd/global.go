@@ -17,18 +17,16 @@ type GlobalFlags struct {
 	Version     string `json:"version" yaml:"version"`
 	Built       string `json:"built" yaml:"built"`
 
-	Hostname            string `json:"-" yaml:"-"`
-	Namespace           string `json:"-" yaml:"-"`
-	SovereignConfigPath string `json:"-" yaml:"-"`
-	LogFormat           string `json:"-" yaml:"-"`
-	LogLevel            string `json:"-" yaml:"-"`
+	Hostname  string `json:"-" yaml:"-"`
+	Namespace string `json:"-" yaml:"-"`
+	LogFormat string `json:"-" yaml:"-"`
+	LogLevel  string `json:"-" yaml:"-"`
 }
 
 func (g *GlobalFlags) addFlags(cmd *cobra.Command) {
 	cmd.PersistentFlags().StringVarP(&g.Namespace, "namespace", "n", "moon", "The namespace of the service")
-	cmd.PersistentFlags().StringVar(&g.SovereignConfigPath, "sovereign-config", "./.sovereign/", "The config file of the sovereign")
 	cmd.PersistentFlags().StringVar(&g.LogFormat, "log-format", "TEXT", "The format of the log")
-	cmd.PersistentFlags().StringVar(&g.LogLevel, "log-level", "INFO", "The level of the log")
+	cmd.PersistentFlags().StringVar(&g.LogLevel, "log-level", "DEBUG", "The level of the log")
 }
 
 type GlobalOption func(*GlobalFlags)

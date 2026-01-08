@@ -23,6 +23,29 @@ func init() {
 	globalRegistry.RegisterORMFactory(config.ORMConfig_SQLITE, buildORMFromSQLite)
 }
 
+// NewDB creates a new database connection.
+// If the orm factory is not registered, it will return an error.
+// The database connection is not closed, you need to call the returned function to close the connection.
+func NewDB(c *config.ORMConfig, logger *klog.Helper) (*gorm.DB, func() error, error) {
+	factory, ok := globalRegistry.GetORMFactory(c.GetDialector())
+	if !ok {
+		return nil, nil, merr.ErrorInternalServer("orm factory not registered")
+	}
+	db, err := factory(c, logger)
+	if err != nil {
+		return nil, nil, err
+	}
+	return db, func() error { return loseDBConnection(db) }, nil
+}
+
+func loseDBConnection(db *gorm.DB) error {
+	mdb, err := db.DB()
+	if err != nil {
+		return err
+	}
+	return mdb.Close()
+}
+
 func buildORMFromMySQL(c *config.ORMConfig, logger *klog.Helper) (*gorm.DB, error) {
 	mysqlConf := &config.MySQLOptions{}
 	if pointer.IsNotNil(c.GetOptions()) {
@@ -89,20 +112,4 @@ func (c *gormBuilder) build() (*gorm.DB, error) {
 	}
 
 	return db, nil
-}
-
-func CloseDB(db *gorm.DB) error {
-	mdb, err := db.DB()
-	if err != nil {
-		return fmt.Errorf("get db connection failed: %w", err)
-	}
-	return mdb.Close()
-}
-
-func NewDB(c *config.ORMConfig, logger *klog.Helper) (*gorm.DB, error) {
-	factory, ok := globalRegistry.GetORMFactory(c.GetDialector())
-	if !ok {
-		return nil, merr.ErrorInternalServer("orm factory not registered")
-	}
-	return factory(c, logger)
 }

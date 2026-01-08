@@ -1,7 +1,6 @@
 environment: ${MOON_SOVEREIGN_ENVIRONMENT:PROD}
-enableClientConfig: ${MOON_SOVEREIGN_ENABLE_CLIENT_CONFIG:false}
-enableSwagger: ${MOON_SOVEREIGN_ENABLE_SWAGGER:false}
-enableMetrics: ${MOON_SOVEREIGN_ENABLE_METRICS:false}
+enableSwagger: ${MOON_SOVEREIGN_ENABLE_SWAGGER:true}
+enableMetrics: ${MOON_SOVEREIGN_ENABLE_METRICS:true}
 
 server:
   name: ${MOON_SOVEREIGN_SERVER_NAME:sovereign}
@@ -13,12 +12,12 @@ server:
     author: ${MOON_SOVEREIGN_METADATA_AUTHOR:Aide Family}
     email: ${MOON_SOVEREIGN_METADATA_EMAIL:aidecloud@163.com}
   http:
-    address: "${MOON_SOVEREIGN_HTTP_ADDRESS:0.0.0.0:10080}"
+    address: "${MOON_SOVEREIGN_HTTP_ADDRESS:0.0.0.0:18080}"
     network: "${MOON_SOVEREIGN_HTTP_NETWORK:tcp}"
     timeout: "${MOON_SOVEREIGN_HTTP_TIMEOUT:10s}"
     protocol: HTTP
   grpc:
-    address: "${MOON_SOVEREIGN_GRPC_ADDRESS:0.0.0.0:10090}"
+    address: "${MOON_SOVEREIGN_GRPC_ADDRESS:0.0.0.0:19090}"
     network: "${MOON_SOVEREIGN_GRPC_NETWORK:tcp}"
     timeout: "${MOON_SOVEREIGN_GRPC_TIMEOUT:10s}"
     protocol: GRPC
@@ -46,28 +45,28 @@ main:
     dsn: "${MOON_SOVEREIGN_MAIN_DSN:file:./sovereign.db?cache=shared}"
 
 report:
-  reportType: ${MOON_SOVEREIGN_REPORT_TYPE:}
+  reportType: ${MOON_SOVEREIGN_REPORT_TYPE:ETCD}
   namespace: ${MOON_SOVEREIGN_REPORT_NAMESPACE:moon}
   options:
     '@type': type.googleapis.com/sovereign.config.ETCDOptions
     endpoints: "${MOON_SOVEREIGN_ETCD_ENDPOINTS:127.0.0.1:2379}"
-    username: "${MOON_SOVEREIGN_ETCD_USERNAME:root}"
-    password: "${MOON_SOVEREIGN_ETCD_PASSWORD:123456}"
+    username: "${MOON_SOVEREIGN_ETCD_USERNAME:}"
+    password: "${MOON_SOVEREIGN_ETCD_PASSWORD:}"
     dialTimeout: "${MOON_SOVEREIGN_ETCD_DIAL_TIMEOUT:10s}"
     kubeConfig: "${MOON_SOVEREIGN_ETCD_KUBE_CONFIG:~/.kube/config}"
 
 cluster:
-  name: ${MOON_SOVEREIGN_CLUSTER_NAME:moon.sovereign}
+  name: ${MOON_SOVEREIGN_CLUSTER_NAME:moon.sovereign.grpc}
   endpoints: ${MOON_SOVEREIGN_CLUSTER_ENDPOINTS:}
   timeout: ${MOON_SOVEREIGN_CLUSTER_TIMEOUT:10s}
   protocol: ${MOON_SOVEREIGN_CLUSTER_PROTOCOL:GRPC}
 
 swaggerBasicAuth:
-  enabled: ${MOON_SOVEREIGN_SWAGGER_BASIC_AUTH_ENABLED:true}  
+  enabled: ${MOON_SOVEREIGN_SWAGGER_BASIC_AUTH_ENABLED:false}  
   username: ${MOON_SOVEREIGN_SWAGGER_BASIC_AUTH_USERNAME:moon.sovereign}
   password: ${MOON_SOVEREIGN_SWAGGER_BASIC_AUTH_PASSWORD:sovereign.swagger}
 
 metricsBasicAuth:
-  enabled: ${MOON_SOVEREIGN_METRICS_BASIC_AUTH_ENABLED:true}
+  enabled: ${MOON_SOVEREIGN_METRICS_BASIC_AUTH_ENABLED:false}
   username: ${MOON_SOVEREIGN_METRICS_BASIC_AUTH_USERNAME:moon.sovereign}
   password: ${MOON_SOVEREIGN_METRICS_BASIC_AUTH_PASSWORD:sovereign.metrics}

@@ -19,10 +19,8 @@ message Bootstrap {
 	string enableSwagger = 8;
 	string enableMetrics = 9;
 	string enableClientConfig = 10;
-	sovereign.config.ClusterConfig cluster = 11;
-	sovereign.config.ReportConfig report = 12;
+	sovereign.config.ReportConfig report = 11;
 }
-
 
 message Server {
 	message ServerConfig {
