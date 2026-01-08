@@ -19,11 +19,11 @@ import (
 )
 
 func init() {
-	globalRegistry.RegisterORMFactory(config.ORMConfig_MYSQL, NewORMConfigBuilderFromMySQL)
-	globalRegistry.RegisterORMFactory(config.ORMConfig_SQLITE, NewORMConfigBuilderFromSQLite)
+	globalRegistry.RegisterORMFactory(config.ORMConfig_MYSQL, buildORMFromMySQL)
+	globalRegistry.RegisterORMFactory(config.ORMConfig_SQLITE, buildORMFromSQLite)
 }
 
-func NewORMConfigBuilderFromMySQL(c *config.ORMConfig, logger *klog.Helper) (*ORMConfig, error) {
+func buildORMFromMySQL(c *config.ORMConfig, logger *klog.Helper) (*gorm.DB, error) {
 	mysqlConf := &config.MySQLOptions{}
 	if pointer.IsNotNil(c.GetOptions()) {
 		if err := anypb.UnmarshalTo(c.GetOptions(), mysqlConf, proto.UnmarshalOptions{Merge: true}); err != nil {
@@ -43,14 +43,15 @@ func NewORMConfigBuilderFromMySQL(c *config.ORMConfig, logger *klog.Helper) (*OR
 		ormConfig.Logger = gormlog.New(logger.Logger())
 	}
 
-	return &ORMConfig{
+	b := &gormBuilder{
 		Dialector: mysql.Open(dsn),
 		Config:    ormConfig,
 		IsDebug:   strings.EqualFold(c.GetDebug(), "true"),
-	}, nil
+	}
+	return b.build()
 }
 
-func NewORMConfigBuilderFromSQLite(c *config.ORMConfig, logger *klog.Helper) (*ORMConfig, error) {
+func buildORMFromSQLite(c *config.ORMConfig, logger *klog.Helper) (*gorm.DB, error) {
 	sqliteConf := &config.SQLiteOptions{}
 	if pointer.IsNotNil(c.GetOptions()) {
 		if err := anypb.UnmarshalTo(c.GetOptions(), sqliteConf, proto.UnmarshalOptions{Merge: true}); err != nil {
@@ -63,20 +64,21 @@ func NewORMConfigBuilderFromSQLite(c *config.ORMConfig, logger *klog.Helper) (*O
 	if strings.EqualFold(c.GetUseSystemLogger(), "true") {
 		ormConfig.Logger = gormlog.New(logger.Logger())
 	}
-	return &ORMConfig{
+	b := &gormBuilder{
 		Dialector: sqlite.Open(sqliteConf.Dsn),
 		Config:    ormConfig,
 		IsDebug:   strings.EqualFold(c.GetDebug(), "true"),
-	}, nil
+	}
+	return b.build()
 }
 
-type ORMConfig struct {
+type gormBuilder struct {
 	Dialector gorm.Dialector
 	Config    *gorm.Config
 	IsDebug   bool
 }
 
-func (c *ORMConfig) BuildDB() (*gorm.DB, error) {
+func (c *gormBuilder) build() (*gorm.DB, error) {
 	db, err := gorm.Open(c.Dialector, c.Config)
 	if err != nil {
 		return nil, err
@@ -102,9 +104,5 @@ func NewDB(c *config.ORMConfig, logger *klog.Helper) (*gorm.DB, error) {
 	if !ok {
 		return nil, merr.ErrorInternalServer("orm factory not registered")
 	}
-	ormConfig, err := factory(c, logger)
-	if err != nil {
-		return nil, err
-	}
-	return ormConfig.BuildDB()
+	return factory(c, logger)
 }

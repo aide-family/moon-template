@@ -45,21 +45,22 @@ main:
       loc: Asia/Shanghai
     dsn: "${MOON_SOVEREIGN_MAIN_DSN:file:./sovereign.db?cache=shared}"
 
-registryType: ${MOON_SOVEREIGN_REGISTRY_TYPE:}
+report:
+  reportType: ${MOON_SOVEREIGN_REPORT_TYPE:}
+  namespace: ${MOON_SOVEREIGN_REPORT_NAMESPACE:moon}
+  options:
+    '@type': type.googleapis.com/sovereign.config.ETCDOptions
+    endpoints: "${MOON_SOVEREIGN_ETCD_ENDPOINTS:127.0.0.1:2379}"
+    username: "${MOON_SOVEREIGN_ETCD_USERNAME:root}"
+    password: "${MOON_SOVEREIGN_ETCD_PASSWORD:123456}"
+    dialTimeout: "${MOON_SOVEREIGN_ETCD_DIAL_TIMEOUT:10s}"
+    kubeConfig: "${MOON_SOVEREIGN_ETCD_KUBE_CONFIG:~/.kube/config}"
 
 cluster:
   name: ${MOON_SOVEREIGN_CLUSTER_NAME:moon.sovereign}
   endpoints: ${MOON_SOVEREIGN_CLUSTER_ENDPOINTS:}
   timeout: ${MOON_SOVEREIGN_CLUSTER_TIMEOUT:10s}
   protocol: ${MOON_SOVEREIGN_CLUSTER_PROTOCOL:GRPC}
-
-etcd:
-  endpoints: ${MOON_SOVEREIGN_ETCD_ENDPOINTS:127.0.0.1:2379}
-  username: ${MOON_SOVEREIGN_ETCD_USERNAME:}
-  password: ${MOON_SOVEREIGN_ETCD_PASSWORD:}
-
-kubernetes:
-  kubeConfig: ${MOON_SOVEREIGN_KUBERNETES_KUBECONFIG:~/.kube/config}
 
 swaggerBasicAuth:
   enabled: ${MOON_SOVEREIGN_SWAGGER_BASIC_AUTH_ENABLED:true}  

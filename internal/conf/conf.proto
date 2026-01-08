@@ -20,9 +20,7 @@ message Bootstrap {
 	string enableMetrics = 9;
 	string enableClientConfig = 10;
 	sovereign.config.ClusterConfig cluster = 11;
-	sovereign.config.RegistryType registryType = 12;
-	sovereign.config.ETCDConfig etcd = 13;
-	sovereign.config.KubernetesConfig kubernetes = 14;
+	sovereign.config.ReportConfig report = 12;
 }
 
 

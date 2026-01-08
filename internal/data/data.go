@@ -3,26 +3,20 @@ package data
 
 import (
 	"context"
-	"time"
 
 	"github.com/aide-family/magicbox/plugin/cache"
 	"github.com/aide-family/magicbox/plugin/cache/mem"
 	"github.com/aide-family/magicbox/pointer"
 	"github.com/aide-family/magicbox/safety"
 	"github.com/aide-family/magicbox/strutil"
-	"github.com/go-kratos/kratos/contrib/registry/etcd/v2"
-	kuberegistry "github.com/go-kratos/kratos/contrib/registry/kubernetes/v2"
 	klog "github.com/go-kratos/kratos/v2/log"
-	"github.com/go-kratos/kratos/v2/registry"
 	"github.com/google/wire"
-	clientV3 "go.etcd.io/etcd/client/v3"
 	"gorm.io/gorm"
 
 	"github.com/aide-family/sovereign/internal/biz/do/query"
 	"github.com/aide-family/sovereign/internal/conf"
 	"github.com/aide-family/sovereign/pkg/config"
 	"github.com/aide-family/sovereign/pkg/connect"
-	"github.com/aide-family/sovereign/pkg/merr"
 )
 
 // ProviderSetData is a set of data providers.
@@ -75,17 +69,12 @@ func New(c *conf.Bootstrap, helper *klog.Helper) (*Data, func(), error) {
 	return d, d.close, nil
 }
 
-type Registry interface {
-	registry.Registrar
-	registry.Discovery
-}
-
 type Data struct {
 	helper      *klog.Helper
 	c           *conf.Bootstrap
 	dbs         *safety.SyncMap[string, *gorm.DB]
 	mainDB      *gorm.DB
-	registry    Registry
+	registry    connect.Report
 	cache       cache.Interface
 	closes      *safety.SyncMap[string, func() error] // 使用SyncMap保证并发安全
 	reloadFuncs *safety.SyncMap[string, func()]
@@ -136,43 +125,20 @@ func (d *Data) BizDB(ctx context.Context, namespace string) *gorm.DB {
 	return d.mainDB.WithContext(ctx)
 }
 
-func (d *Data) Registry() Registry {
+func (d *Data) Registry() connect.Report {
 	return d.registry
 }
 
 func (d *Data) initRegistry() error {
-	namespace := d.c.GetServer().GetNamespace()
-	switch registryType := d.c.GetRegistryType(); registryType {
-	case config.RegistryType_KUBERNETES:
-		kubeConfig := d.c.GetKubernetes()
-		if pointer.IsNil(kubeConfig) {
-			return merr.ErrorInternalServer("kubernetes config is not found")
-		}
-		kubeClient, err := connect.NewKubernetesClientSet(kubeConfig.GetKubeConfig())
-		if err != nil {
-			d.helper.Errorw("msg", "kubernetes client initialization failed", "error", err)
-			return err
-		}
-		registrar := kuberegistry.NewRegistry(kubeClient, namespace)
-		d.registry = registrar
-	case config.RegistryType_ETCD:
-		etcdConfig := d.c.GetEtcd()
-		if pointer.IsNil(etcdConfig) {
-			return merr.ErrorInternalServer("etcd config is not found")
-		}
-		client, err := clientV3.New(clientV3.Config{
-			Endpoints:   strutil.SplitSkipEmpty(etcdConfig.GetEndpoints(), ","),
-			Username:    etcdConfig.GetUsername(),
-			Password:    etcdConfig.GetPassword(),
-			DialTimeout: 5 * time.Second,
-		})
-		if err != nil {
-			d.helper.Errorw("msg", "etcd client initialization failed", "error", err)
-			return err
-		}
-		registrar := etcd.New(client, etcd.Namespace(namespace))
-		d.registry = registrar
-		d.closes.Set("etcdClient", func() error { return client.Close() })
+	report := d.c.GetReport()
+	if pointer.IsNil(report) || report.GetReportType() == config.ReportConfig_REPORT_TYPE_UNKNOWN {
+		return nil
 	}
+	reportInstance, closer, err := connect.NewReport(report, d.helper)
+	if err != nil {
+		return err
+	}
+	d.registry = reportInstance
+	d.closes.Set("report", closer)
 	return nil
 }

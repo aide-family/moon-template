@@ -27,16 +27,13 @@ type RunFlags struct {
 	*conf.Bootstrap
 	*cmd.GlobalFlags
 
-	metadata            []string
-	useRandomID         bool
-	mainDebug           bool
-	mainUseSystemLogger bool
-	configPaths         []string
-	environment         string
-	jwtExpire           string
-	registryType        string
-	clusterTimeout      time.Duration
-	clusterProtocol     string
+	metadata        []string
+	useRandomID     bool
+	configPaths     []string
+	environment     string
+	jwtExpire       string
+	clusterTimeout  time.Duration
+	clusterProtocol string
 }
 
 var runFlags RunFlags
@@ -59,15 +56,6 @@ func (f *RunFlags) addFlags(c *cobra.Command, bc *conf.Bootstrap) {
 	c.PersistentFlags().StringVar(&f.Jwt.Secret, "jwt-secret", f.Jwt.Secret, `Example: --jwt-secret="xxx"`)
 	c.PersistentFlags().StringVar(&f.jwtExpire, "jwt-expire", f.Jwt.Expire.AsDuration().String(), `Example: --jwt-expire="10s", --jwt-expire="1m", --jwt-expire="1h", --jwt-expire="1d"`)
 	c.PersistentFlags().StringVar(&f.Jwt.Issuer, "jwt-issuer", f.Jwt.Issuer, `Example: --jwt-issuer="xxx"`)
-	mainDebug, _ := strconv.ParseBool(f.Main.Debug)
-	c.PersistentFlags().BoolVar(&f.mainDebug, "main-debug", mainDebug, `Example: --main-debug=false`)
-	mainUseSystemLogger, _ := strconv.ParseBool(f.Main.UseSystemLogger)
-	c.PersistentFlags().BoolVar(&f.mainUseSystemLogger, "main-use-system-logger", mainUseSystemLogger, `Example: --main-use-system-logger=true`)
-	c.PersistentFlags().StringVar(&f.registryType, "registry-type", f.RegistryType.String(), `Example: --registry-type="ETCD"`)
-	c.PersistentFlags().StringVar(&f.Etcd.Endpoints, "etcd-endpoints", f.Etcd.Endpoints, `Example: --etcd-endpoints="127.0.0.1:2379"`)
-	c.PersistentFlags().StringVar(&f.Etcd.Username, "etcd-username", f.Etcd.Username, `Example: --etcd-username="root"`)
-	c.PersistentFlags().StringVar(&f.Etcd.Password, "etcd-password", f.Etcd.Password, `Example: --etcd-password="123456"`)
-	c.PersistentFlags().StringVar(&f.Kubernetes.KubeConfig, "kubernetes-kubeconfig", f.Kubernetes.KubeConfig, `Example: --kubernetes-kubeconfig="~/.kube/config"`)
 	c.PersistentFlags().StringVar(&f.Cluster.Endpoints, "cluster-endpoints", f.Cluster.Endpoints, `Example: --cluster-endpoints="127.0.0.1:2379"`)
 	c.PersistentFlags().StringVar(&f.Cluster.Name, "cluster-name", f.Cluster.Name, `Example: --cluster-name="moon.sovereign"`)
 	c.PersistentFlags().DurationVar(&f.clusterTimeout, "cluster-timeout", f.Cluster.Timeout.AsDuration(), `Example: --cluster-timeout="10s"`)
@@ -75,8 +63,6 @@ func (f *RunFlags) addFlags(c *cobra.Command, bc *conf.Bootstrap) {
 }
 
 func (f *RunFlags) ApplyToBootstrap() error {
-	f.Main.Debug = strconv.FormatBool(f.mainDebug)
-	f.Main.UseSystemLogger = strconv.FormatBool(f.mainUseSystemLogger)
 	if strutil.IsEmpty(f.Server.Name) {
 		f.Server.Name = f.Name
 	}
@@ -112,10 +98,6 @@ func (f *RunFlags) ApplyToBootstrap() error {
 		if expire, err := time.ParseDuration(f.jwtExpire); pointer.IsNil(err) {
 			f.Jwt.Expire = durationpb.New(expire)
 		}
-	}
-
-	if strutil.IsNotEmpty(f.registryType) {
-		f.RegistryType = config.RegistryType(config.RegistryType_value[f.registryType])
 	}
 
 	if len(f.configPaths) > 0 {
