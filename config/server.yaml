@@ -32,28 +32,28 @@ main:
   debug: ${MOON_SOVEREIGN_MAIN_DEBUG:false}
   useSystemLogger: ${MOON_SOVEREIGN_MAIN_USE_SYSTEM_LOGGER:true}
   options:
-    '@type': type.googleapis.com/sovereign.config.MySQLOptions
-    username: "${MOON_SOVEREIGN_MAIN_USERNAME:root}"
-    password: "${MOON_SOVEREIGN_MAIN_PASSWORD:123456}"
-    host: "${MOON_SOVEREIGN_MAIN_HOST:localhost}"
-    port: ${MOON_SOVEREIGN_MAIN_PORT:3306}
-    database: ${MOON_SOVEREIGN_MAIN_DATABASE:sovereign}
+    '@type': "${MOON_SOVEREIGN_MAIN_OPTIONS_TYPE:type.googleapis.com/sovereign.config.MySQLOptions}"
+    username: "${MOON_SOVEREIGN_MAIN_OPTIONS_USERNAME:root}"
+    password: "${MOON_SOVEREIGN_MAIN_OPTIONS_PASSWORD:123456}"
+    host: "${MOON_SOVEREIGN_MAIN_OPTIONS_HOST:localhost}"
+    port: ${MOON_SOVEREIGN_MAIN_OPTIONS_PORT:3306}
+    database: ${MOON_SOVEREIGN_MAIN_OPTIONS_DATABASE:sovereign}
     parameters:
       charset: utf8mb4
       parseTime: "true"
       loc: Asia/Shanghai
-    dsn: "${MOON_SOVEREIGN_MAIN_DSN:file:./sovereign.db?cache=shared}"
+    dsn: "${MOON_SOVEREIGN_MAIN_OPTIONS_DSN:file:./sovereign.db?cache=shared}"
 
 report:
   reportType: ${MOON_SOVEREIGN_REPORT_TYPE:ETCD}
   namespace: ${MOON_SOVEREIGN_REPORT_NAMESPACE:moon}
   options:
-    '@type': type.googleapis.com/sovereign.config.ETCDOptions
-    endpoints: "${MOON_SOVEREIGN_ETCD_ENDPOINTS:127.0.0.1:2379}"
-    username: "${MOON_SOVEREIGN_ETCD_USERNAME:}"
-    password: "${MOON_SOVEREIGN_ETCD_PASSWORD:}"
-    dialTimeout: "${MOON_SOVEREIGN_ETCD_DIAL_TIMEOUT:10s}"
-    kubeConfig: "${MOON_SOVEREIGN_ETCD_KUBE_CONFIG:~/.kube/config}"
+    '@type': "${MOON_SOVEREIGN_REPORT_OPTIONS_TYPE:type.googleapis.com/sovereign.config.ETCDOptions}"
+    endpoints: "${MOON_SOVEREIGN_REPORT_OPTIONS_ENDPOINTS:127.0.0.1:2379}"
+    username: "${MOON_SOVEREIGN_REPORT_OPTIONS_USERNAME:}"
+    password: "${MOON_SOVEREIGN_REPORT_OPTIONS_PASSWORD:}"
+    dialTimeout: "${MOON_SOVEREIGN_REPORT_OPTIONS_DIAL_TIMEOUT:10s}"
+    kubeConfig: "${MOON_SOVEREIGN_REPORT_OPTIONS_KUBE_CONFIG:~/.kube/config}"
 
 cluster:
   name: ${MOON_SOVEREIGN_CLUSTER_NAME:moon.sovereign.grpc}

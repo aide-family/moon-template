@@ -1,6 +1,9 @@
 package connect
 
 import (
+	"context"
+	"sync"
+
 	"github.com/aide-family/magicbox/load"
 	"github.com/aide-family/magicbox/pointer"
 	"github.com/aide-family/magicbox/strutil"
@@ -31,6 +34,38 @@ type Report interface {
 	registry.Discovery
 }
 
+// safeReport wraps a Report to provide thread-safe access to Register and Deregister operations.
+// This prevents concurrent map read/write errors when multiple apps share the same registry.
+type safeReport struct {
+	registrar registry.Registrar
+	discovery registry.Discovery
+	mu        sync.Mutex
+}
+
+func (s *safeReport) Register(ctx context.Context, service *registry.ServiceInstance) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.registrar.Register(ctx, service)
+}
+
+func (s *safeReport) Deregister(ctx context.Context, service *registry.ServiceInstance) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.registrar.Deregister(ctx, service)
+}
+
+func (s *safeReport) GetService(ctx context.Context, serviceName string) ([]*registry.ServiceInstance, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.discovery.GetService(ctx, serviceName)
+}
+
+func (s *safeReport) Watch(ctx context.Context, serviceName string) (registry.Watcher, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.discovery.Watch(ctx, serviceName)
+}
+
 // NewReport creates a new report.
 // If the report factory is not registered, it will return an error.
 // The report is not closed, you need to call the returned function to close the report.
@@ -39,7 +74,16 @@ func NewReport(c *config.ReportConfig, logger *klog.Helper) (Report, func() erro
 	if !ok {
 		return nil, nil, merr.ErrorInternalServer("report factory not registered")
 	}
-	return factory(c, logger)
+	report, closeFn, err := factory(c, logger)
+	if err != nil {
+		return nil, nil, err
+	}
+	// Wrap the report with thread-safe wrapper to prevent concurrent map access
+	safe := &safeReport{
+		registrar: report,
+		discovery: report,
+	}
+	return safe, closeFn, nil
 }
 
 func buildReportFromKubernetes(c *config.ReportConfig, logger *klog.Helper) (Report, func() error, error) {
