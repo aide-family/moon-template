@@ -20,9 +20,10 @@ import (
 func NewNamespaceRepository(c *conf.Bootstrap, d *data.Data) (repository.Namespace, error) {
 	repoConfig := c.GetNamespaceConfig()
 	version := repoConfig.GetVersion()
+	driver := repoConfig.GetDriver()
 	switch version {
 	default:
-		factory, ok := repo.GetNamespaceV1Factory(repoConfig.GetName())
+		factory, ok := repo.GetNamespaceV1Factory(driver)
 		if !ok {
 			return nil, merr.ErrorInternalServer("namespace repository factory not found")
 		}

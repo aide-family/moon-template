@@ -4,7 +4,6 @@ package data
 import (
 	"context"
 
-	_ "github.com/aide-family/sovereign/pkg/connect"
 	_ "github.com/aide-family/sovereign/pkg/repo/namespace/v1/gormimpl"
 
 	"github.com/aide-family/magicbox/plugin/cache"

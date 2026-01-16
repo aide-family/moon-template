@@ -1,4 +1,4 @@
-# Sovereign (太阴星君) 🐰
+# Moon-template
 
 <div align="right">
 
@@ -10,14 +10,17 @@
 [![许可证](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Kratos](https://img.shields.io/badge/Kratos-v2-00ADD8?style=flat&logo=go)](https://github.com/go-kratos/kratos)
 
-> 基于 Kratos 框架构建的分布式服务治理平台，提供统一的服务治理能力。
-
 ## 📖 项目介绍
 
-Sovereign (太阴星君)  是作为 moon 体系通用的服务模板项目
+Moon-template 是作为 moon 体系通用的服务模板项目
 
 ## 🚀 快速开始
 ```bash
 make all
 go run . run all 
 ```
+
+## 致谢
+
+- [kratos](https://github.com/go-kratos/kratos)
+- [cobra](https://github.com/spf13/cobra)

@@ -23,7 +23,7 @@ import (
 )
 
 func init() {
-	repo.RegisterNamespaceV1Factory("gorm", NewGormRepository)
+	repo.RegisterNamespaceV1Factory(config.NamespaceOptions_GORM, NewGormRepository)
 }
 
 type Field interface {

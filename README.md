@@ -1,4 +1,4 @@
-# Sovereign (太阴星君) 🐰
+# Moon-template 🐰
 
 <div align="right">
 
@@ -10,11 +10,9 @@
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Kratos](https://img.shields.io/badge/Kratos-v2-00ADD8?style=flat&logo=go)](https://github.com/go-kratos/kratos)
 
-> Sovereign (太阴星君) is a universal service template project for the Moon platform.
-
 ## 📖 Introduction
 
-Sovereign (太阴星君) is a universal service template project for the Moon platform.
+Moon-template is a universal service template project for the Moon platform.
 
 ## Quick Start
 
@@ -22,3 +20,8 @@ Sovereign (太阴星君) is a universal service template project for the Moon pl
 make all
 go run . run all 
 ```
+
+## Acknowledgments
+
+- [kratos](https://github.com/go-kratos/kratos)
+- [cobra](https://github.com/spf13/cobra)

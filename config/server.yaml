@@ -28,7 +28,7 @@ jwt:
   issuer: "${MOON_SOVEREIGN_JWT_ISSUER:sovereign}"
 
 namespaceConfig:
-  name: ${MOON_SOVEREIGN_NAMESPACE_NAME:gorm}
+  driver: ${MOON_SOVEREIGN_NAMESPACE_DRIVER:GORM}
   version: ${MOON_SOVEREIGN_NAMESPACE_VERSION:v1}
   options:
     '@type': "${MOON_SOVEREIGN_NAMESPACE_OPTIONS_TYPE:type.googleapis.com/sovereign.config.ORMConfig}"

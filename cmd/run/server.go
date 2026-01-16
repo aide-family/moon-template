@@ -145,6 +145,9 @@ func (e *endpoint) start(wg *sync.WaitGroup) {
 }
 
 func (e *endpoint) Cleanup() {
+	if e.cleanup == nil {
+		return
+	}
 	e.cleanup()
 }
 
