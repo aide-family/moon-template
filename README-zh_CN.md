@@ -1,4 +1,4 @@
-# Moon-template
+# Sovereign (太阴星君)
 
 <div align="right">
 
@@ -12,7 +12,7 @@
 
 ## 📖 项目介绍
 
-Moon-template 是作为 moon 体系通用的服务模板项目
+Sovereign (太阴星君) 是作为 moon 体系通用的服务模板项目
 
 ## 🚀 快速开始
 ```bash
