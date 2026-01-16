@@ -14,18 +14,18 @@ message ClientConfig {
 	string namespace = 4;
 }
 
+enum Protocol {
+	PROTOCOL_UNKNOWN = 0;
+	GRPC = 1;
+	HTTP = 2;
+}
+
 message ClusterConfig {
-	enum Protocol {
-		PROTOCOL_UNKNOWN = 0;
-		GRPC = 1;
-		HTTP = 2;
-	}
 	string name = 1;
 	string endpoints = 2;
 	google.protobuf.Duration timeout = 3;
 	Protocol protocol = 4;
 }
-
 
 message ORMConfig {
 	enum Dialector {
@@ -80,13 +80,32 @@ message BasicAuthConfig {
 	string enabled = 3;
 }
 
-message NamespaceOptions {
+message NamespaceConfig {
 	enum Driver {
 		FILE = 0;
 		GORM = 1;
 		ETCD = 2;
+		OUTER = 3;
 	}
 	Driver driver = 1;
     string version = 2;
     google.protobuf.Any options = 3;
+}
+
+message FileConfig {
+	enum FileType {
+		YAML = 0;
+		JSON = 1;
+	}
+	string path = 1;
+	FileType fileType = 2;
+	string filename = 3;
+	google.protobuf.Duration storageInterval = 4;
+}
+
+message OuterServerConfig {
+	string address = 1;
+	string network = 2;
+	google.protobuf.Duration timeout = 3;
+	Protocol protocol = 4;
 }

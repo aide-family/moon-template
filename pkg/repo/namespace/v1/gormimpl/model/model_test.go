@@ -5,7 +5,9 @@ import (
 	"testing"
 
 	klog "github.com/go-kratos/kratos/v2/log"
+	"gorm.io/driver/mysql"
 	"gorm.io/gen"
+	"gorm.io/gorm"
 
 	"github.com/aide-family/sovereign/pkg/repo/namespace/v1/gormimpl/model"
 )
@@ -40,6 +42,21 @@ func generate() {
 	klog.Debugw("msg", "generate code success")
 }
 
+func migrate() {
+	dsn := "root:123456@tcp(localhost:3306)/sovereign?charset=utf8mb4&parseTime=True&loc=Local"
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
+		DisableForeignKeyConstraintWhenMigrating: true,
+	})
+	if err != nil {
+		panic("failed to connect database")
+	}
+	db.AutoMigrate(model.Models()...)
+}
+
 func TestGenerate(t *testing.T) {
 	generate()
+}
+
+func TestMigrate(t *testing.T) {
+	migrate()
 }

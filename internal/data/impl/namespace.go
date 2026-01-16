@@ -1,6 +1,9 @@
 package impl
 
 import (
+	_ "github.com/aide-family/sovereign/pkg/repo/namespace/v1/fileimpl"
+	_ "github.com/aide-family/sovereign/pkg/repo/namespace/v1/gormimpl"
+
 	"context"
 	"time"
 
@@ -101,6 +104,7 @@ func (n *namespaceRepository) ListNamespace(ctx context.Context, req *bo.ListNam
 	for _, namespaceModel := range listNamespaceResponse.Namespaces {
 		items = append(items, parseNamespaceModel(namespaceModel))
 	}
+	req.WithTotal(listNamespaceResponse.Total)
 	return bo.NewPageResponseBo(req.PageRequestBo, items), nil
 }
 

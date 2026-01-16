@@ -169,53 +169,99 @@ func (ReportConfig_ReportType) EnumDescriptor() ([]byte, []int) {
 	return file_config_config_proto_rawDescGZIP(), []int{5, 0}
 }
 
-type NamespaceOptions_Driver int32
+type NamespaceConfig_Driver int32
 
 const (
-	NamespaceOptions_FILE NamespaceOptions_Driver = 0
-	NamespaceOptions_GORM NamespaceOptions_Driver = 1
-	NamespaceOptions_ETCD NamespaceOptions_Driver = 2
+	NamespaceConfig_FILE NamespaceConfig_Driver = 0
+	NamespaceConfig_GORM NamespaceConfig_Driver = 1
+	NamespaceConfig_ETCD NamespaceConfig_Driver = 2
 )
 
-// Enum value maps for NamespaceOptions_Driver.
+// Enum value maps for NamespaceConfig_Driver.
 var (
-	NamespaceOptions_Driver_name = map[int32]string{
+	NamespaceConfig_Driver_name = map[int32]string{
 		0: "FILE",
 		1: "GORM",
 		2: "ETCD",
 	}
-	NamespaceOptions_Driver_value = map[string]int32{
+	NamespaceConfig_Driver_value = map[string]int32{
 		"FILE": 0,
 		"GORM": 1,
 		"ETCD": 2,
 	}
 )
 
-func (x NamespaceOptions_Driver) Enum() *NamespaceOptions_Driver {
-	p := new(NamespaceOptions_Driver)
+func (x NamespaceConfig_Driver) Enum() *NamespaceConfig_Driver {
+	p := new(NamespaceConfig_Driver)
 	*p = x
 	return p
 }
 
-func (x NamespaceOptions_Driver) String() string {
+func (x NamespaceConfig_Driver) String() string {
 	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
 }
 
-func (NamespaceOptions_Driver) Descriptor() protoreflect.EnumDescriptor {
+func (NamespaceConfig_Driver) Descriptor() protoreflect.EnumDescriptor {
 	return file_config_config_proto_enumTypes[3].Descriptor()
 }
 
-func (NamespaceOptions_Driver) Type() protoreflect.EnumType {
+func (NamespaceConfig_Driver) Type() protoreflect.EnumType {
 	return &file_config_config_proto_enumTypes[3]
 }
 
-func (x NamespaceOptions_Driver) Number() protoreflect.EnumNumber {
+func (x NamespaceConfig_Driver) Number() protoreflect.EnumNumber {
 	return protoreflect.EnumNumber(x)
 }
 
-// Deprecated: Use NamespaceOptions_Driver.Descriptor instead.
-func (NamespaceOptions_Driver) EnumDescriptor() ([]byte, []int) {
+// Deprecated: Use NamespaceConfig_Driver.Descriptor instead.
+func (NamespaceConfig_Driver) EnumDescriptor() ([]byte, []int) {
 	return file_config_config_proto_rawDescGZIP(), []int{9, 0}
+}
+
+type FileConfig_FileType int32
+
+const (
+	FileConfig_YAML FileConfig_FileType = 0
+	FileConfig_JSON FileConfig_FileType = 1
+)
+
+// Enum value maps for FileConfig_FileType.
+var (
+	FileConfig_FileType_name = map[int32]string{
+		0: "YAML",
+		1: "JSON",
+	}
+	FileConfig_FileType_value = map[string]int32{
+		"YAML": 0,
+		"JSON": 1,
+	}
+)
+
+func (x FileConfig_FileType) Enum() *FileConfig_FileType {
+	p := new(FileConfig_FileType)
+	*p = x
+	return p
+}
+
+func (x FileConfig_FileType) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (FileConfig_FileType) Descriptor() protoreflect.EnumDescriptor {
+	return file_config_config_proto_enumTypes[4].Descriptor()
+}
+
+func (FileConfig_FileType) Type() protoreflect.EnumType {
+	return &file_config_config_proto_enumTypes[4]
+}
+
+func (x FileConfig_FileType) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use FileConfig_FileType.Descriptor instead.
+func (FileConfig_FileType) EnumDescriptor() ([]byte, []int) {
+	return file_config_config_proto_rawDescGZIP(), []int{10, 0}
 }
 
 type ClientConfig struct {
@@ -782,29 +828,29 @@ func (x *BasicAuthConfig) GetEnabled() string {
 	return ""
 }
 
-type NamespaceOptions struct {
-	state         protoimpl.MessageState  `protogen:"open.v1"`
-	Driver        NamespaceOptions_Driver `protobuf:"varint,1,opt,name=driver,proto3,enum=sovereign.config.NamespaceOptions_Driver" json:"driver,omitempty"`
-	Version       string                  `protobuf:"bytes,2,opt,name=version,proto3" json:"version,omitempty"`
-	Options       *anypb.Any              `protobuf:"bytes,3,opt,name=options,proto3" json:"options,omitempty"`
+type NamespaceConfig struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Driver        NamespaceConfig_Driver `protobuf:"varint,1,opt,name=driver,proto3,enum=sovereign.config.NamespaceConfig_Driver" json:"driver,omitempty"`
+	Version       string                 `protobuf:"bytes,2,opt,name=version,proto3" json:"version,omitempty"`
+	Options       *anypb.Any             `protobuf:"bytes,3,opt,name=options,proto3" json:"options,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *NamespaceOptions) Reset() {
-	*x = NamespaceOptions{}
+func (x *NamespaceConfig) Reset() {
+	*x = NamespaceConfig{}
 	mi := &file_config_config_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *NamespaceOptions) String() string {
+func (x *NamespaceConfig) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*NamespaceOptions) ProtoMessage() {}
+func (*NamespaceConfig) ProtoMessage() {}
 
-func (x *NamespaceOptions) ProtoReflect() protoreflect.Message {
+func (x *NamespaceConfig) ProtoReflect() protoreflect.Message {
 	mi := &file_config_config_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -816,28 +862,96 @@ func (x *NamespaceOptions) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use NamespaceOptions.ProtoReflect.Descriptor instead.
-func (*NamespaceOptions) Descriptor() ([]byte, []int) {
+// Deprecated: Use NamespaceConfig.ProtoReflect.Descriptor instead.
+func (*NamespaceConfig) Descriptor() ([]byte, []int) {
 	return file_config_config_proto_rawDescGZIP(), []int{9}
 }
 
-func (x *NamespaceOptions) GetDriver() NamespaceOptions_Driver {
+func (x *NamespaceConfig) GetDriver() NamespaceConfig_Driver {
 	if x != nil {
 		return x.Driver
 	}
-	return NamespaceOptions_FILE
+	return NamespaceConfig_FILE
 }
 
-func (x *NamespaceOptions) GetVersion() string {
+func (x *NamespaceConfig) GetVersion() string {
 	if x != nil {
 		return x.Version
 	}
 	return ""
 }
 
-func (x *NamespaceOptions) GetOptions() *anypb.Any {
+func (x *NamespaceConfig) GetOptions() *anypb.Any {
 	if x != nil {
 		return x.Options
+	}
+	return nil
+}
+
+type FileConfig struct {
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	Path            string                 `protobuf:"bytes,1,opt,name=path,proto3" json:"path,omitempty"`
+	FileType        FileConfig_FileType    `protobuf:"varint,2,opt,name=fileType,proto3,enum=sovereign.config.FileConfig_FileType" json:"fileType,omitempty"`
+	Filename        string                 `protobuf:"bytes,3,opt,name=filename,proto3" json:"filename,omitempty"`
+	StorageInterval *durationpb.Duration   `protobuf:"bytes,4,opt,name=storageInterval,proto3" json:"storageInterval,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *FileConfig) Reset() {
+	*x = FileConfig{}
+	mi := &file_config_config_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *FileConfig) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FileConfig) ProtoMessage() {}
+
+func (x *FileConfig) ProtoReflect() protoreflect.Message {
+	mi := &file_config_config_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FileConfig.ProtoReflect.Descriptor instead.
+func (*FileConfig) Descriptor() ([]byte, []int) {
+	return file_config_config_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *FileConfig) GetPath() string {
+	if x != nil {
+		return x.Path
+	}
+	return ""
+}
+
+func (x *FileConfig) GetFileType() FileConfig_FileType {
+	if x != nil {
+		return x.FileType
+	}
+	return FileConfig_YAML
+}
+
+func (x *FileConfig) GetFilename() string {
+	if x != nil {
+		return x.Filename
+	}
+	return ""
+}
+
+func (x *FileConfig) GetStorageInterval() *durationpb.Duration {
+	if x != nil {
+		return x.StorageInterval
 	}
 	return nil
 }
@@ -948,23 +1062,38 @@ var file_config_config_proto_rawDesc = []byte{
 	0x1a, 0x0a, 0x08, 0x70, 0x61, 0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28,
 	0x09, 0x52, 0x08, 0x70, 0x61, 0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x12, 0x18, 0x0a, 0x07, 0x65,
 	0x6e, 0x61, 0x62, 0x6c, 0x65, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x65, 0x6e,
-	0x61, 0x62, 0x6c, 0x65, 0x64, 0x22, 0xc7, 0x01, 0x0a, 0x10, 0x4e, 0x61, 0x6d, 0x65, 0x73, 0x70,
-	0x61, 0x63, 0x65, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x12, 0x41, 0x0a, 0x06, 0x64, 0x72,
-	0x69, 0x76, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x29, 0x2e, 0x73, 0x6f, 0x76,
-	0x65, 0x72, 0x65, 0x69, 0x67, 0x6e, 0x2e, 0x63, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x2e, 0x4e, 0x61,
-	0x6d, 0x65, 0x73, 0x70, 0x61, 0x63, 0x65, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x2e, 0x44,
-	0x72, 0x69, 0x76, 0x65, 0x72, 0x52, 0x06, 0x64, 0x72, 0x69, 0x76, 0x65, 0x72, 0x12, 0x18, 0x0a,
-	0x07, 0x76, 0x65, 0x72, 0x73, 0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07,
-	0x76, 0x65, 0x72, 0x73, 0x69, 0x6f, 0x6e, 0x12, 0x2e, 0x0a, 0x07, 0x6f, 0x70, 0x74, 0x69, 0x6f,
-	0x6e, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c,
-	0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x41, 0x6e, 0x79, 0x52, 0x07,
-	0x6f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x22, 0x26, 0x0a, 0x06, 0x44, 0x72, 0x69, 0x76, 0x65,
-	0x72, 0x12, 0x08, 0x0a, 0x04, 0x46, 0x49, 0x4c, 0x45, 0x10, 0x00, 0x12, 0x08, 0x0a, 0x04, 0x47,
-	0x4f, 0x52, 0x4d, 0x10, 0x01, 0x12, 0x08, 0x0a, 0x04, 0x45, 0x54, 0x43, 0x44, 0x10, 0x02, 0x42,
-	0x34, 0x5a, 0x32, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x61, 0x69,
-	0x64, 0x65, 0x2d, 0x66, 0x61, 0x6d, 0x69, 0x6c, 0x79, 0x2f, 0x73, 0x6f, 0x76, 0x65, 0x72, 0x65,
-	0x69, 0x67, 0x6e, 0x2f, 0x70, 0x6b, 0x67, 0x2f, 0x63, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x3b, 0x63,
-	0x6f, 0x6e, 0x66, 0x69, 0x67, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x61, 0x62, 0x6c, 0x65, 0x64, 0x22, 0xc5, 0x01, 0x0a, 0x0f, 0x4e, 0x61, 0x6d, 0x65, 0x73, 0x70,
+	0x61, 0x63, 0x65, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x12, 0x40, 0x0a, 0x06, 0x64, 0x72, 0x69,
+	0x76, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x28, 0x2e, 0x73, 0x6f, 0x76, 0x65,
+	0x72, 0x65, 0x69, 0x67, 0x6e, 0x2e, 0x63, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x2e, 0x4e, 0x61, 0x6d,
+	0x65, 0x73, 0x70, 0x61, 0x63, 0x65, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x2e, 0x44, 0x72, 0x69,
+	0x76, 0x65, 0x72, 0x52, 0x06, 0x64, 0x72, 0x69, 0x76, 0x65, 0x72, 0x12, 0x18, 0x0a, 0x07, 0x76,
+	0x65, 0x72, 0x73, 0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x76, 0x65,
+	0x72, 0x73, 0x69, 0x6f, 0x6e, 0x12, 0x2e, 0x0a, 0x07, 0x6f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73,
+	0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x14, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x41, 0x6e, 0x79, 0x52, 0x07, 0x6f, 0x70,
+	0x74, 0x69, 0x6f, 0x6e, 0x73, 0x22, 0x26, 0x0a, 0x06, 0x44, 0x72, 0x69, 0x76, 0x65, 0x72, 0x12,
+	0x08, 0x0a, 0x04, 0x46, 0x49, 0x4c, 0x45, 0x10, 0x00, 0x12, 0x08, 0x0a, 0x04, 0x47, 0x4f, 0x52,
+	0x4d, 0x10, 0x01, 0x12, 0x08, 0x0a, 0x04, 0x45, 0x54, 0x43, 0x44, 0x10, 0x02, 0x22, 0xe4, 0x01,
+	0x0a, 0x0a, 0x46, 0x69, 0x6c, 0x65, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x12, 0x12, 0x0a, 0x04,
+	0x70, 0x61, 0x74, 0x68, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x70, 0x61, 0x74, 0x68,
+	0x12, 0x41, 0x0a, 0x08, 0x66, 0x69, 0x6c, 0x65, 0x54, 0x79, 0x70, 0x65, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x0e, 0x32, 0x25, 0x2e, 0x73, 0x6f, 0x76, 0x65, 0x72, 0x65, 0x69, 0x67, 0x6e, 0x2e, 0x63,
+	0x6f, 0x6e, 0x66, 0x69, 0x67, 0x2e, 0x46, 0x69, 0x6c, 0x65, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67,
+	0x2e, 0x46, 0x69, 0x6c, 0x65, 0x54, 0x79, 0x70, 0x65, 0x52, 0x08, 0x66, 0x69, 0x6c, 0x65, 0x54,
+	0x79, 0x70, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x66, 0x69, 0x6c, 0x65, 0x6e, 0x61, 0x6d, 0x65, 0x18,
+	0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x66, 0x69, 0x6c, 0x65, 0x6e, 0x61, 0x6d, 0x65, 0x12,
+	0x43, 0x0a, 0x0f, 0x73, 0x74, 0x6f, 0x72, 0x61, 0x67, 0x65, 0x49, 0x6e, 0x74, 0x65, 0x72, 0x76,
+	0x61, 0x6c, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c,
+	0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x44, 0x75, 0x72, 0x61, 0x74,
+	0x69, 0x6f, 0x6e, 0x52, 0x0f, 0x73, 0x74, 0x6f, 0x72, 0x61, 0x67, 0x65, 0x49, 0x6e, 0x74, 0x65,
+	0x72, 0x76, 0x61, 0x6c, 0x22, 0x1e, 0x0a, 0x08, 0x46, 0x69, 0x6c, 0x65, 0x54, 0x79, 0x70, 0x65,
+	0x12, 0x08, 0x0a, 0x04, 0x59, 0x41, 0x4d, 0x4c, 0x10, 0x00, 0x12, 0x08, 0x0a, 0x04, 0x4a, 0x53,
+	0x4f, 0x4e, 0x10, 0x01, 0x42, 0x34, 0x5a, 0x32, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63,
+	0x6f, 0x6d, 0x2f, 0x61, 0x69, 0x64, 0x65, 0x2d, 0x66, 0x61, 0x6d, 0x69, 0x6c, 0x79, 0x2f, 0x73,
+	0x6f, 0x76, 0x65, 0x72, 0x65, 0x69, 0x67, 0x6e, 0x2f, 0x70, 0x6b, 0x67, 0x2f, 0x63, 0x6f, 0x6e,
+	0x66, 0x69, 0x67, 0x3b, 0x63, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x33,
 }
 
 var (
@@ -979,45 +1108,49 @@ func file_config_config_proto_rawDescGZIP() []byte {
 	return file_config_config_proto_rawDescData
 }
 
-var file_config_config_proto_enumTypes = make([]protoimpl.EnumInfo, 4)
-var file_config_config_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
+var file_config_config_proto_enumTypes = make([]protoimpl.EnumInfo, 5)
+var file_config_config_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
 var file_config_config_proto_goTypes = []any{
 	(ClusterConfig_Protocol)(0),  // 0: sovereign.config.ClusterConfig.Protocol
 	(ORMConfig_Dialector)(0),     // 1: sovereign.config.ORMConfig.Dialector
 	(ReportConfig_ReportType)(0), // 2: sovereign.config.ReportConfig.ReportType
-	(NamespaceOptions_Driver)(0), // 3: sovereign.config.NamespaceOptions.Driver
-	(*ClientConfig)(nil),         // 4: sovereign.config.ClientConfig
-	(*ClusterConfig)(nil),        // 5: sovereign.config.ClusterConfig
-	(*ORMConfig)(nil),            // 6: sovereign.config.ORMConfig
-	(*MySQLOptions)(nil),         // 7: sovereign.config.MySQLOptions
-	(*SQLiteOptions)(nil),        // 8: sovereign.config.SQLiteOptions
-	(*ReportConfig)(nil),         // 9: sovereign.config.ReportConfig
-	(*ETCDOptions)(nil),          // 10: sovereign.config.ETCDOptions
-	(*KubernetesOptions)(nil),    // 11: sovereign.config.KubernetesOptions
-	(*BasicAuthConfig)(nil),      // 12: sovereign.config.BasicAuthConfig
-	(*NamespaceOptions)(nil),     // 13: sovereign.config.NamespaceOptions
-	nil,                          // 14: sovereign.config.MySQLOptions.ParametersEntry
-	(*durationpb.Duration)(nil),  // 15: google.protobuf.Duration
-	(*anypb.Any)(nil),            // 16: google.protobuf.Any
+	(NamespaceConfig_Driver)(0),  // 3: sovereign.config.NamespaceConfig.Driver
+	(FileConfig_FileType)(0),     // 4: sovereign.config.FileConfig.FileType
+	(*ClientConfig)(nil),         // 5: sovereign.config.ClientConfig
+	(*ClusterConfig)(nil),        // 6: sovereign.config.ClusterConfig
+	(*ORMConfig)(nil),            // 7: sovereign.config.ORMConfig
+	(*MySQLOptions)(nil),         // 8: sovereign.config.MySQLOptions
+	(*SQLiteOptions)(nil),        // 9: sovereign.config.SQLiteOptions
+	(*ReportConfig)(nil),         // 10: sovereign.config.ReportConfig
+	(*ETCDOptions)(nil),          // 11: sovereign.config.ETCDOptions
+	(*KubernetesOptions)(nil),    // 12: sovereign.config.KubernetesOptions
+	(*BasicAuthConfig)(nil),      // 13: sovereign.config.BasicAuthConfig
+	(*NamespaceConfig)(nil),      // 14: sovereign.config.NamespaceConfig
+	(*FileConfig)(nil),           // 15: sovereign.config.FileConfig
+	nil,                          // 16: sovereign.config.MySQLOptions.ParametersEntry
+	(*durationpb.Duration)(nil),  // 17: google.protobuf.Duration
+	(*anypb.Any)(nil),            // 18: google.protobuf.Any
 }
 var file_config_config_proto_depIdxs = []int32{
-	5,  // 0: sovereign.config.ClientConfig.cluster:type_name -> sovereign.config.ClusterConfig
-	9,  // 1: sovereign.config.ClientConfig.report:type_name -> sovereign.config.ReportConfig
-	15, // 2: sovereign.config.ClusterConfig.timeout:type_name -> google.protobuf.Duration
+	6,  // 0: sovereign.config.ClientConfig.cluster:type_name -> sovereign.config.ClusterConfig
+	10, // 1: sovereign.config.ClientConfig.report:type_name -> sovereign.config.ReportConfig
+	17, // 2: sovereign.config.ClusterConfig.timeout:type_name -> google.protobuf.Duration
 	0,  // 3: sovereign.config.ClusterConfig.protocol:type_name -> sovereign.config.ClusterConfig.Protocol
 	1,  // 4: sovereign.config.ORMConfig.dialector:type_name -> sovereign.config.ORMConfig.Dialector
-	16, // 5: sovereign.config.ORMConfig.options:type_name -> google.protobuf.Any
-	14, // 6: sovereign.config.MySQLOptions.parameters:type_name -> sovereign.config.MySQLOptions.ParametersEntry
+	18, // 5: sovereign.config.ORMConfig.options:type_name -> google.protobuf.Any
+	16, // 6: sovereign.config.MySQLOptions.parameters:type_name -> sovereign.config.MySQLOptions.ParametersEntry
 	2,  // 7: sovereign.config.ReportConfig.reportType:type_name -> sovereign.config.ReportConfig.ReportType
-	16, // 8: sovereign.config.ReportConfig.options:type_name -> google.protobuf.Any
-	15, // 9: sovereign.config.ETCDOptions.dialTimeout:type_name -> google.protobuf.Duration
-	3,  // 10: sovereign.config.NamespaceOptions.driver:type_name -> sovereign.config.NamespaceOptions.Driver
-	16, // 11: sovereign.config.NamespaceOptions.options:type_name -> google.protobuf.Any
-	12, // [12:12] is the sub-list for method output_type
-	12, // [12:12] is the sub-list for method input_type
-	12, // [12:12] is the sub-list for extension type_name
-	12, // [12:12] is the sub-list for extension extendee
-	0,  // [0:12] is the sub-list for field type_name
+	18, // 8: sovereign.config.ReportConfig.options:type_name -> google.protobuf.Any
+	17, // 9: sovereign.config.ETCDOptions.dialTimeout:type_name -> google.protobuf.Duration
+	3,  // 10: sovereign.config.NamespaceConfig.driver:type_name -> sovereign.config.NamespaceConfig.Driver
+	18, // 11: sovereign.config.NamespaceConfig.options:type_name -> google.protobuf.Any
+	4,  // 12: sovereign.config.FileConfig.fileType:type_name -> sovereign.config.FileConfig.FileType
+	17, // 13: sovereign.config.FileConfig.storageInterval:type_name -> google.protobuf.Duration
+	14, // [14:14] is the sub-list for method output_type
+	14, // [14:14] is the sub-list for method input_type
+	14, // [14:14] is the sub-list for extension type_name
+	14, // [14:14] is the sub-list for extension extendee
+	0,  // [0:14] is the sub-list for field type_name
 }
 
 func init() { file_config_config_proto_init() }
@@ -1030,8 +1163,8 @@ func file_config_config_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_config_config_proto_rawDesc,
-			NumEnums:      4,
-			NumMessages:   11,
+			NumEnums:      5,
+			NumMessages:   12,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

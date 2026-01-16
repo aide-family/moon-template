@@ -5,8 +5,10 @@ import (
 	"context"
 	"errors"
 
+	"github.com/aide-family/magicbox/hello"
 	"github.com/aide-family/magicbox/pointer"
 	"github.com/aide-family/magicbox/safety"
+	"github.com/bwmarrin/snowflake"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/anypb"
 	"gorm.io/gen/field"
@@ -23,7 +25,7 @@ import (
 )
 
 func init() {
-	repo.RegisterNamespaceV1Factory(config.NamespaceOptions_GORM, NewGormRepository)
+	repo.RegisterNamespaceV1Factory(config.NamespaceConfig_GORM, NewGormRepository)
 }
 
 type Field interface {
@@ -31,7 +33,7 @@ type Field interface {
 	Asc() field.Expr
 }
 
-func NewGormRepository(c *config.NamespaceOptions) (namespacev1.Repository, func() error, error) {
+func NewGormRepository(c *config.NamespaceConfig) (namespacev1.Repository, func() error, error) {
 	ormConfig := &config.ORMConfig{}
 	if pointer.IsNotNil(c.GetOptions()) {
 		if err := anypb.UnmarshalTo(c.GetOptions(), ormConfig, proto.UnmarshalOptions{Merge: true}); err != nil {
@@ -54,13 +56,18 @@ func NewGormRepository(c *config.NamespaceOptions) (namespacev1.Repository, func
 		namespacev1.Field_DELETED_AT: query.Namespace.DeletedAt,
 		namespacev1.Field_CREATOR:    query.Namespace.Creator,
 	})
-	return &gormRepository{repoConfig: c, db: db, fields: fields}, close, nil
+	node, err := snowflake.NewNode(hello.NodeID())
+	if err != nil {
+		return nil, nil, err
+	}
+	return &gormRepository{repoConfig: c, db: db, fields: fields, node: node}, close, nil
 }
 
 type gormRepository struct {
-	repoConfig *config.NamespaceOptions
+	repoConfig *config.NamespaceConfig
 	db         *gorm.DB
 	fields     *safety.Map[namespacev1.Field, Field]
+	node       *snowflake.Node
 }
 
 func (g *gormRepository) getField(name namespacev1.Field) Field {
@@ -78,6 +85,8 @@ func (g *gormRepository) CreateNamespace(ctx context.Context, req *namespacev1.C
 		Metadata: safety.NewMap(req.Metadata),
 		Status:   uint8(req.Status),
 	}
+	namespaceDo.WithCreator(1)
+	namespaceDo.WithUID(g.node.Generate())
 	mutation := query.Namespace
 	if err := mutation.WithContext(ctx).Create(namespaceDo); err != nil {
 		return nil, merr.ErrorInternalServer("create namespace failed: %v", err)
