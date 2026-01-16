@@ -35,8 +35,8 @@ go.work.sum
 description.txt
 
 # generated files
-*.pb.go
-*_gen.go
+internal/**/*.pb.go
+cmd/**/*_gen.go
 
 
 # deploy

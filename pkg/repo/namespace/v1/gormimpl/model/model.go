@@ -1,16 +1,16 @@
-// Package do is the data object package for the Sovereign service.
-package do
+// Package model is the model package for the namespace service.
+package model
 
 import (
-	"context"
+	"errors"
 	"time"
 
 	"github.com/aide-family/magicbox/hello"
+	"github.com/aide-family/magicbox/safety"
 	"github.com/aide-family/magicbox/strutil"
+
 	"github.com/bwmarrin/snowflake"
 	"gorm.io/gorm"
-
-	"github.com/aide-family/sovereign/pkg/middler"
 )
 
 func Models() []any {
@@ -30,7 +30,7 @@ type BaseModel struct {
 
 func (b *BaseModel) BeforeCreate(tx *gorm.DB) (err error) {
 	if b.Creator == 0 {
-		b.WithCreator(tx.Statement.Context)
+		return errors.New("creator is required")
 	}
 
 	node, err := snowflake.NewNode(hello.NodeID())
@@ -42,8 +42,8 @@ func (b *BaseModel) BeforeCreate(tx *gorm.DB) (err error) {
 	return
 }
 
-func (b *BaseModel) WithCreator(ctx context.Context) *BaseModel {
-	b.Creator = middler.GetBaseInfo(ctx).UserID
+func (b *BaseModel) WithCreator(creator snowflake.ID) *BaseModel {
+	b.Creator = creator
 	return b
 }
 
@@ -59,13 +59,13 @@ type NamespaceModel struct {
 }
 
 func (n *NamespaceModel) BeforeCreate(tx *gorm.DB) (err error) {
-	if n.BaseModel.BeforeCreate(tx) != nil {
-		return
+	if err = n.BaseModel.BeforeCreate(tx); err != nil {
+		return err
 	}
 	if strutil.IsEmpty(n.Namespace) {
-		n.WithNamespace(middler.GetNamespace(tx.Statement.Context))
+		return errors.New("namespace is required")
 	}
-	return
+	return nil
 }
 
 func (n *NamespaceModel) WithNamespace(namespace string) *NamespaceModel {
@@ -73,14 +73,24 @@ func (n *NamespaceModel) WithNamespace(namespace string) *NamespaceModel {
 	return n
 }
 
-func HasTable(tx *gorm.DB, tableName string) bool {
-	return tx.Migrator().HasTable(tableName)
+type Namespace struct {
+	BaseModel
+
+	Name     string                      `gorm:"column:name;type:varchar(100);not null;uniqueIndex"`
+	Metadata *safety.Map[string, string] `gorm:"column:metadata;type:json;"`
+	Status   uint8                       `gorm:"column:status;type:tinyint;not null;default:0"`
 }
 
-func getFirstMonday(date time.Time) time.Time {
-	offset := int(time.Monday - date.Weekday())
-	if offset > 0 {
-		offset -= 7
+func (Namespace) TableName() string {
+	return "namespaces"
+}
+
+func (n *Namespace) BeforeCreate(tx *gorm.DB) (err error) {
+	if err = n.BaseModel.BeforeCreate(tx); err != nil {
+		return
 	}
-	return date.AddDate(0, 0, offset)
+	if n.Status <= 0 {
+		return errors.New("status is required")
+	}
+	return
 }

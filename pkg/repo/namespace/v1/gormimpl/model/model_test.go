@@ -1,18 +1,17 @@
-package main
+package model_test
 
 import (
 	"os"
+	"testing"
 
 	klog "github.com/go-kratos/kratos/v2/log"
-	"github.com/spf13/cobra"
 	"gorm.io/gen"
 
-	"github.com/aide-family/sovereign/cmd"
-	"github.com/aide-family/sovereign/internal/biz/do"
+	"github.com/aide-family/sovereign/pkg/repo/namespace/v1/gormimpl/model"
 )
 
 var genConfig = gen.Config{
-	OutPath: "./internal/biz/do/query",
+	OutPath: "../query",
 	Mode:    gen.WithoutContext | gen.WithDefaultQuery | gen.WithQueryInterface, // generate mode
 	// If you want to generate pointer type properties for nullable fields, set FieldNullable to true
 	// FieldNullable: true,
@@ -28,42 +27,19 @@ var genConfig = gen.Config{
 	// WithUnitTest: true,
 }
 
-const cmdGenLong = `Generate GORM query code for models and repositories`
-
-func newGenCmd() *cobra.Command {
-	genCmd := &cobra.Command{
-		Use:   "gen",
-		Short: "Generate GORM query code for models and repositories",
-		Long:  cmdGenLong,
-		Annotations: map[string]string{
-			"group": cmd.CodeCommands,
-		},
-		Run: func(cmd *cobra.Command, args []string) {
-			generate()
-		},
-	}
-	genCmd.Flags().StringVarP(&genConfig.OutPath, "out", "o", "./internal/biz/do/query", "output directory")
-	return genCmd
-}
-
 func generate() {
-	if flags.forceGen {
-		klog.Debugw("msg", "remove all files")
-		os.RemoveAll(genConfig.OutPath)
-		klog.Debugw("msg", "remove all files success", "path", genConfig.OutPath)
-	}
+	klog.Debugw("msg", "remove all files")
+	os.RemoveAll(genConfig.OutPath)
+	klog.Debugw("msg", "remove all files success", "path", genConfig.OutPath)
+
 	g := gen.NewGenerator(genConfig)
-	g.SetLogger(&genLogger{helper: klog.NewHelper(klog.GetLogger())})
+
 	klog.Debugw("msg", "generate code start")
-	g.ApplyBasic(do.Models()...)
+	g.ApplyBasic(model.Models()...)
 	g.Execute()
 	klog.Debugw("msg", "generate code success")
 }
 
-type genLogger struct {
-	helper *klog.Helper
-}
-
-func (g *genLogger) Println(v ...any) {
-	g.helper.Debug(v...)
+func TestGenerate(t *testing.T) {
+	generate()
 }

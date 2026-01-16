@@ -12,14 +12,13 @@ message Bootstrap {
 	sovereign.enum.Environment environment = 1;
 	Server server = 2;
 	JWT jwt = 3;
-    sovereign.config.ORMConfig main = 4;
-    map<string, sovereign.config.ORMConfig> biz = 5;
-	sovereign.config.BasicAuthConfig swaggerBasicAuth = 6;
-	sovereign.config.BasicAuthConfig metricsBasicAuth = 7;
-	string enableSwagger = 8;
-	string enableMetrics = 9;
-	string enableClientConfig = 10;
-	sovereign.config.ReportConfig report = 11;
+	sovereign.config.BasicAuthConfig swaggerBasicAuth = 4;
+	sovereign.config.BasicAuthConfig metricsBasicAuth = 5;
+	string enableSwagger = 6;
+	string enableMetrics = 7;
+	string enableClientConfig = 8;
+	sovereign.config.ReportConfig report = 9;
+	sovereign.config.NamespaceOptions namespaceConfig = 10;
 }
 
 message Server {

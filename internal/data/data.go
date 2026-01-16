@@ -4,16 +4,16 @@ package data
 import (
 	"context"
 
+	_ "github.com/aide-family/sovereign/pkg/connect"
+	_ "github.com/aide-family/sovereign/pkg/repo/namespace/v1/gormimpl"
+
 	"github.com/aide-family/magicbox/plugin/cache"
 	"github.com/aide-family/magicbox/plugin/cache/mem"
 	"github.com/aide-family/magicbox/pointer"
 	"github.com/aide-family/magicbox/safety"
-	"github.com/aide-family/magicbox/strutil"
 	klog "github.com/go-kratos/kratos/v2/log"
 	"github.com/google/wire"
-	"gorm.io/gorm"
 
-	"github.com/aide-family/sovereign/internal/biz/do/query"
 	"github.com/aide-family/sovereign/internal/conf"
 	"github.com/aide-family/sovereign/pkg/config"
 	"github.com/aide-family/sovereign/pkg/connect"
@@ -27,33 +27,12 @@ func New(c *conf.Bootstrap, helper *klog.Helper) (*Data, func(), error) {
 	d := &Data{
 		helper:      helper,
 		c:           c,
-		dbs:         safety.NewSyncMap(make(map[string]*gorm.DB)),
 		closes:      safety.NewSyncMap(make(map[string]func() error)),
 		reloadFuncs: safety.NewSyncMap(make(map[string]func())),
 	}
 
 	if err := d.initRegistry(); err != nil {
 		return nil, d.close, err
-	}
-	mainDB, closer, err := connect.NewDB(d.c.GetMain(), d.helper)
-	if err != nil {
-		return nil, d.close, err
-	}
-	d.mainDB = mainDB
-	d.closes.Set("mainDB", closer)
-
-	for namespace, biz := range d.c.GetBiz() {
-		db, closer, err := connect.NewDB(biz, d.helper)
-		if err != nil {
-			return nil, d.close, err
-		}
-
-		for _, ns := range strutil.SplitSkipEmpty(namespace, ",") {
-			d.dbs.Set(ns, db)
-		}
-
-		namespaceKey := "bizDB.[" + namespace + "]"
-		d.closes.Set(namespaceKey, closer)
 	}
 
 	cacheDriver := mem.CacheDriver()
@@ -70,8 +49,6 @@ func New(c *conf.Bootstrap, helper *klog.Helper) (*Data, func(), error) {
 type Data struct {
 	helper      *klog.Helper
 	c           *conf.Bootstrap
-	dbs         *safety.SyncMap[string, *gorm.DB]
-	mainDB      *gorm.DB
 	registry    connect.Report
 	cache       cache.Interface
 	closes      *safety.SyncMap[string, func() error] // 使用SyncMap保证并发安全
@@ -93,36 +70,6 @@ func (d *Data) close() {
 	})
 }
 
-func (d *Data) MainDB(ctx context.Context) *gorm.DB {
-	if tx, ok := GetMainTransaction(ctx); ok {
-		return tx.DB.WithContext(ctx)
-	}
-	return d.mainDB.WithContext(ctx)
-}
-
-func (d *Data) MainQuery(ctx context.Context) *query.Query {
-	return query.Use(d.MainDB(ctx))
-}
-
-func (d *Data) BizQuery(ctx context.Context, namespace string) *query.Query {
-	return query.Use(d.BizDB(ctx, namespace))
-}
-
-func (d *Data) BizQueryWithTable(ctx context.Context, namespace string, tableName string, args ...any) *query.Query {
-	return query.Use(d.BizDB(ctx, namespace).Table(tableName, args...))
-}
-
-func (d *Data) BizDB(ctx context.Context, namespace string) *gorm.DB {
-	if tx, ok := GetBizTransaction(ctx, namespace); ok {
-		return tx.DB.WithContext(ctx)
-	}
-	db, ok := d.dbs.Get(namespace)
-	if ok {
-		return db.WithContext(ctx)
-	}
-	return d.mainDB.WithContext(ctx)
-}
-
 func (d *Data) Registry() connect.Report {
 	return d.registry
 }
@@ -132,7 +79,7 @@ func (d *Data) initRegistry() error {
 	if pointer.IsNil(report) || report.GetReportType() == config.ReportConfig_REPORT_TYPE_UNKNOWN {
 		return nil
 	}
-	reportInstance, closer, err := connect.NewReport(report, d.helper)
+	reportInstance, closer, err := connect.NewReport(report)
 	if err != nil {
 		return err
 	}

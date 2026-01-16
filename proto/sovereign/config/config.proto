@@ -79,3 +79,9 @@ message BasicAuthConfig {
 	string password = 2;
 	string enabled = 3;
 }
+
+message NamespaceOptions {
+    string name = 1;
+    string version = 2;
+    google.protobuf.Any options = 3;
+}

@@ -81,12 +81,7 @@ func (s *NamespaceService) SelectNamespace(ctx context.Context, req *apiv1.Selec
 	if err != nil {
 		return nil, err
 	}
-	return bo.ToAPIV1SelectNamespaceReply(&bo.SelectNamespaceReplyParams{
-		Items:   result.Items,
-		Total:   result.Total,
-		LastUID: result.LastUID,
-		Limit:   req.Limit,
-	}), nil
+	return bo.ToAPIV1SelectNamespaceReply(result), nil
 }
 
 func (s *NamespaceService) HasNamespace(ctx context.Context) error {
