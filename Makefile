@@ -58,7 +58,6 @@ api:
 		if [ ! -d "./pkg" ]; then $(MKDIR) ./pkg; fi \
 	fi
 	protoc --proto_path=./proto/sovereign \
-	       --proto_path=./proto/sovereign \
 	       --proto_path=./proto/third_party \
  	       --go_out=paths=source_relative:./pkg \
  	       --go-http_out=paths=source_relative:./pkg \
@@ -95,7 +94,6 @@ errors:
            --go_out=paths=source_relative:./pkg/merr \
            --go-errors_out=paths=source_relative:./pkg/merr \
            ./proto/sovereign/merr/*.proto
-	make i18n
 
 .PHONY: all
 # generate all files

@@ -48,3 +48,6 @@ description.txt
 
 # database
 *.db
+
+# bin
+bin/

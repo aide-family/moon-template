@@ -19,11 +19,11 @@ import (
 )
 
 var (
-	Name        = "moon"
+	Name        = "sovereign"
 	Version     = "latest"
 	BuildTime   = "now"
-	Author      = "Aide Family"
-	Email       = "aidecloud@163.com"
+	Author      = ""
+	Email       = ""
 	Repo        = "https://github.com/aide-family/sovereign"
 	hostname, _ = os.Hostname()
 )

@@ -16,8 +16,67 @@ Moon-template 是作为 moon 体系通用的服务模板项目
 
 ## 🚀 快速开始
 ```bash
+make init
+make build
+```
+
+### 运行二进制文件
+
+- 帮助
+
+```bash
+./bin/sovereign -h
+```
+
+- 版本
+
+```bash
+./bin/sovereign version
+```
+
+- 运行所有服务
+
+```bash
+./bin/sovereign run all -h
+```
+
+- 运行 gRPC 服务
+
+```bash
+./bin/sovereign run grpc -h
+```
+
+- 运行 HTTP 服务
+
+```bash
+./bin/sovereign run http -h
+```
+
+## 开发
+
+```bash
+make init
 make all
-go run . run all 
+```
+
+### 运行应用程序
+
+- run all
+
+```bash
+go run . run all
+```
+
+- run grpc
+
+```bash
+go run . run grpc
+```
+
+- run http
+
+```bash
+go run . run http
 ```
 
 ## 致谢

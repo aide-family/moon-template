@@ -1,4 +1,4 @@
-# Moon-template 🐰
+# Sovereign (太阴星君)
 
 <div align="right">
 
@@ -12,13 +12,72 @@
 
 ## 📖 Introduction
 
-Moon-template is a universal service template project for the Moon platform.
+Sovereign (太阴星君) is a universal service template project for the Moon platform.
 
 ## Quick Start
 
 ```bash
+make init
+make build
+```
+
+### run the binary
+
+- help
+
+```bash
+./bin/sovereign -h
+```
+
+- version
+
+```bash
+./bin/sovereign version
+```
+
+- run all
+
+```bash
+./bin/sovereign run all -h
+```
+
+- run grpc
+
+```bash
+./bin/sovereign run grpc -h
+```
+
+- run http
+
+```bash
+./bin/sovereign run http -h
+```
+
+## Development
+
+```bash
+make init
 make all
-go run . run all 
+```
+
+### run the application
+
+- run all
+
+```bash
+go run . run all
+```
+
+- run grpc
+
+```bash
+go run . run grpc
+```
+
+- run http
+
+```bash
+go run . run http
 ```
 
 ## Acknowledgments
