@@ -5,6 +5,7 @@ import (
 	nethttp "net/http"
 	"strings"
 
+	"github.com/aide-family/magicbox/pointer"
 	klog "github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/transport/http"
 
@@ -41,7 +42,7 @@ func BindHandlerWithAuth(httpSrv *http.Server, binding HandlerBinding) {
 
 	handler := binding.Handler
 	basicAuth := binding.BasicAuth
-	if strings.EqualFold(basicAuth.GetEnabled(), "true") {
+	if pointer.IsNotNil(basicAuth) && strings.EqualFold(basicAuth.GetEnabled(), "true") {
 		handler = middler.BasicAuthMiddleware(basicAuth.GetUsername(), basicAuth.GetPassword())(handler)
 		klog.Debugf("[%s] endpoint: %s%s (Basic Auth: %s:%s)", binding.Name, endpoint, binding.FullPath, basicAuth.GetUsername(), basicAuth.GetPassword())
 	} else {
