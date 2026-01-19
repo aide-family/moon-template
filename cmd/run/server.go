@@ -177,8 +177,8 @@ func NewApp(serviceName string, d *data.Data, srvs server.Servers, bc *conf.Boot
 			if !ok {
 				panic("server instance is not a *http.Server")
 			}
-			server.BindSwagger(httpSrv, bc, helper)
-			server.BindMetrics(httpSrv, bc, helper)
+			server.BindSwagger(httpSrv, bc)
+			server.BindMetrics(httpSrv, bc)
 		}
 
 		apps = append(apps, kratos.New(opts...))

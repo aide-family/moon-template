@@ -9,7 +9,6 @@ import (
 	"buf.build/go/protoyaml"
 	"github.com/go-kratos/kratos/v2/encoding"
 	"github.com/go-kratos/kratos/v2/encoding/json"
-	klog "github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/transport"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/go-kratos/kratos/v2/transport/http"
@@ -21,8 +20,8 @@ import (
 
 	"github.com/aide-family/sovereign/internal/conf"
 	"github.com/aide-family/sovereign/internal/service"
+	"github.com/aide-family/sovereign/pkg/api"
 	apiv1 "github.com/aide-family/sovereign/pkg/api/v1"
-	"github.com/aide-family/sovereign/pkg/middler"
 )
 
 //go:embed swagger
@@ -115,52 +114,30 @@ func newServer(name string, srv transport.Server) Server {
 
 type Servers []Server
 
-func BindSwagger(httpSrv *http.Server, bc *conf.Bootstrap, helper *klog.Helper) {
-	if !strings.EqualFold(bc.GetEnableSwagger(), "true") {
-		helper.Debug("swagger is not enabled")
-		return
+func BindSwagger(httpSrv *http.Server, bc *conf.Bootstrap) {
+	binding := api.HandlerBinding{
+		Name:      "Swagger",
+		Enabled:   strings.EqualFold(bc.GetEnableSwagger(), "true"),
+		BasicAuth: bc.GetSwaggerBasicAuth(),
+		Handler:   nethttp.StripPrefix("/doc/", nethttp.FileServer(nethttp.FS(docFS))),
+		Path:      "/doc/",
+		UsePrefix: true,
+		FullPath:  "/doc/swagger",
 	}
-
-	endpoint, err := httpSrv.Endpoint()
-	if err != nil {
-		helper.Errorw("msg", "get http server endpoint failed", "error", err)
-		return
-	}
-
-	// Create file server handler
-	authHandler := nethttp.StripPrefix("/doc/", nethttp.FileServer(nethttp.FS(docFS)))
-	basicAuth := bc.GetSwaggerBasicAuth()
-	if strings.EqualFold(basicAuth.GetEnabled(), "true") {
-		authHandler = middler.BasicAuthMiddleware(basicAuth.GetUsername(), basicAuth.GetPassword())(authHandler)
-		helper.Debugf("[Swagger] endpoint: %s/doc/swagger (Basic Auth: %s:%s)", endpoint, basicAuth.GetUsername(), basicAuth.GetPassword())
-	} else {
-		helper.Debugf("[Swagger] endpoint: %s/doc/swagger (No Basic Auth)", endpoint)
-	}
-
-	httpSrv.HandlePrefix("/doc/", authHandler)
+	api.BindHandlerWithAuth(httpSrv, binding)
 }
 
-func BindMetrics(httpSrv *http.Server, bc *conf.Bootstrap, helper *klog.Helper) {
-	if !strings.EqualFold(bc.GetEnableMetrics(), "true") {
-		helper.Debug("metrics is not enabled")
-		return
+func BindMetrics(httpSrv *http.Server, bc *conf.Bootstrap) {
+	binding := api.HandlerBinding{
+		Name:      "Metrics",
+		Enabled:   strings.EqualFold(bc.GetEnableMetrics(), "true"),
+		BasicAuth: bc.GetMetricsBasicAuth(),
+		Handler:   promhttp.Handler(),
+		Path:      "/metrics",
+		UsePrefix: false,
+		FullPath:  "/metrics",
 	}
-
-	endpoint, err := httpSrv.Endpoint()
-	if err != nil {
-		helper.Errorw("msg", "get http server endpoint failed", "error", err)
-		return
-	}
-
-	basicAuth := bc.GetMetricsBasicAuth()
-	authHandler := promhttp.Handler()
-	if strings.EqualFold(basicAuth.GetEnabled(), "true") {
-		authHandler = middler.BasicAuthMiddleware(basicAuth.GetUsername(), basicAuth.GetPassword())(authHandler)
-		helper.Debugf("[Metrics] endpoint: %s/metrics (Basic Auth: %s:%s)", endpoint, basicAuth.GetUsername(), basicAuth.GetPassword())
-	} else {
-		helper.Debugf("[Metrics] endpoint: %s/metrics (No Basic Auth)", endpoint)
-	}
-	httpSrv.Handle("/metrics", authHandler)
+	api.BindHandlerWithAuth(httpSrv, binding)
 }
 
 // RegisterService registers the service.
