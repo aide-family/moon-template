@@ -109,3 +109,27 @@ message OuterServerConfig {
 	google.protobuf.Duration timeout = 3;
 	Protocol protocol = 4;
 }
+
+message OAuth2 {
+   enum APP {
+     UNKNOWN = 0;
+     GITHUB = 1;
+     GITEE = 2;
+     FEISHU = 3;
+   }
+   
+   message Config {
+	 APP app = 1;
+     string clientId = 2;
+     string clientSecret = 3;
+     string callbackUri = 4;
+     string authUrl = 5;
+     string tokenUrl = 6;
+     repeated string scopes = 7;
+     string loginUrl = 8;
+   }
+
+   bool enable = 1;
+   string redirectUri = 2;
+   repeated Config configs = 3;
+}

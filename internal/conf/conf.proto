@@ -19,6 +19,7 @@ message Bootstrap {
 	string enableClientConfig = 8;
 	sovereign.config.ReportConfig report = 9;
 	sovereign.config.NamespaceConfig namespaceConfig = 10;
+	sovereign.config.OAuth2 oauth2 = 11;
 }
 
 message Server {

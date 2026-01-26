@@ -267,6 +267,58 @@ func (FileConfig_FileType) EnumDescriptor() ([]byte, []int) {
 	return file_config_config_proto_rawDescGZIP(), []int{10, 0}
 }
 
+type OAuth2_APP int32
+
+const (
+	OAuth2_UNKNOWN OAuth2_APP = 0
+	OAuth2_GITHUB  OAuth2_APP = 1
+	OAuth2_GITEE   OAuth2_APP = 2
+	OAuth2_FEISHU  OAuth2_APP = 3
+)
+
+// Enum value maps for OAuth2_APP.
+var (
+	OAuth2_APP_name = map[int32]string{
+		0: "UNKNOWN",
+		1: "GITHUB",
+		2: "GITEE",
+		3: "FEISHU",
+	}
+	OAuth2_APP_value = map[string]int32{
+		"UNKNOWN": 0,
+		"GITHUB":  1,
+		"GITEE":   2,
+		"FEISHU":  3,
+	}
+)
+
+func (x OAuth2_APP) Enum() *OAuth2_APP {
+	p := new(OAuth2_APP)
+	*p = x
+	return p
+}
+
+func (x OAuth2_APP) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (OAuth2_APP) Descriptor() protoreflect.EnumDescriptor {
+	return file_config_config_proto_enumTypes[5].Descriptor()
+}
+
+func (OAuth2_APP) Type() protoreflect.EnumType {
+	return &file_config_config_proto_enumTypes[5]
+}
+
+func (x OAuth2_APP) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use OAuth2_APP.Descriptor instead.
+func (OAuth2_APP) EnumDescriptor() ([]byte, []int) {
+	return file_config_config_proto_rawDescGZIP(), []int{12, 0}
+}
+
 type ClientConfig struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Cluster       *ClusterConfig         `protobuf:"bytes,1,opt,name=cluster,proto3" json:"cluster,omitempty"`
@@ -1027,6 +1079,166 @@ func (x *OuterServerConfig) GetProtocol() Protocol {
 	return Protocol_PROTOCOL_UNKNOWN
 }
 
+type OAuth2 struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Enable        bool                   `protobuf:"varint,1,opt,name=enable,proto3" json:"enable,omitempty"`
+	RedirectUri   string                 `protobuf:"bytes,2,opt,name=redirectUri,proto3" json:"redirectUri,omitempty"`
+	Configs       []*OAuth2_Config       `protobuf:"bytes,3,rep,name=configs,proto3" json:"configs,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *OAuth2) Reset() {
+	*x = OAuth2{}
+	mi := &file_config_config_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *OAuth2) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*OAuth2) ProtoMessage() {}
+
+func (x *OAuth2) ProtoReflect() protoreflect.Message {
+	mi := &file_config_config_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use OAuth2.ProtoReflect.Descriptor instead.
+func (*OAuth2) Descriptor() ([]byte, []int) {
+	return file_config_config_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *OAuth2) GetEnable() bool {
+	if x != nil {
+		return x.Enable
+	}
+	return false
+}
+
+func (x *OAuth2) GetRedirectUri() string {
+	if x != nil {
+		return x.RedirectUri
+	}
+	return ""
+}
+
+func (x *OAuth2) GetConfigs() []*OAuth2_Config {
+	if x != nil {
+		return x.Configs
+	}
+	return nil
+}
+
+type OAuth2_Config struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	App           OAuth2_APP             `protobuf:"varint,1,opt,name=app,proto3,enum=sovereign.config.OAuth2_APP" json:"app,omitempty"`
+	ClientId      string                 `protobuf:"bytes,2,opt,name=clientId,proto3" json:"clientId,omitempty"`
+	ClientSecret  string                 `protobuf:"bytes,3,opt,name=clientSecret,proto3" json:"clientSecret,omitempty"`
+	CallbackUri   string                 `protobuf:"bytes,4,opt,name=callbackUri,proto3" json:"callbackUri,omitempty"`
+	AuthUrl       string                 `protobuf:"bytes,5,opt,name=authUrl,proto3" json:"authUrl,omitempty"`
+	TokenUrl      string                 `protobuf:"bytes,6,opt,name=tokenUrl,proto3" json:"tokenUrl,omitempty"`
+	Scopes        []string               `protobuf:"bytes,7,rep,name=scopes,proto3" json:"scopes,omitempty"`
+	LoginUrl      string                 `protobuf:"bytes,8,opt,name=loginUrl,proto3" json:"loginUrl,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *OAuth2_Config) Reset() {
+	*x = OAuth2_Config{}
+	mi := &file_config_config_proto_msgTypes[14]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *OAuth2_Config) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*OAuth2_Config) ProtoMessage() {}
+
+func (x *OAuth2_Config) ProtoReflect() protoreflect.Message {
+	mi := &file_config_config_proto_msgTypes[14]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use OAuth2_Config.ProtoReflect.Descriptor instead.
+func (*OAuth2_Config) Descriptor() ([]byte, []int) {
+	return file_config_config_proto_rawDescGZIP(), []int{12, 0}
+}
+
+func (x *OAuth2_Config) GetApp() OAuth2_APP {
+	if x != nil {
+		return x.App
+	}
+	return OAuth2_UNKNOWN
+}
+
+func (x *OAuth2_Config) GetClientId() string {
+	if x != nil {
+		return x.ClientId
+	}
+	return ""
+}
+
+func (x *OAuth2_Config) GetClientSecret() string {
+	if x != nil {
+		return x.ClientSecret
+	}
+	return ""
+}
+
+func (x *OAuth2_Config) GetCallbackUri() string {
+	if x != nil {
+		return x.CallbackUri
+	}
+	return ""
+}
+
+func (x *OAuth2_Config) GetAuthUrl() string {
+	if x != nil {
+		return x.AuthUrl
+	}
+	return ""
+}
+
+func (x *OAuth2_Config) GetTokenUrl() string {
+	if x != nil {
+		return x.TokenUrl
+	}
+	return ""
+}
+
+func (x *OAuth2_Config) GetScopes() []string {
+	if x != nil {
+		return x.Scopes
+	}
+	return nil
+}
+
+func (x *OAuth2_Config) GetLoginUrl() string {
+	if x != nil {
+		return x.LoginUrl
+	}
+	return ""
+}
+
 var File_config_config_proto protoreflect.FileDescriptor
 
 var file_config_config_proto_rawDesc = []byte{
@@ -1168,14 +1380,42 @@ var file_config_config_proto_rawDesc = []byte{
 	0x6f, 0x74, 0x6f, 0x63, 0x6f, 0x6c, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x1a, 0x2e, 0x73,
 	0x6f, 0x76, 0x65, 0x72, 0x65, 0x69, 0x67, 0x6e, 0x2e, 0x63, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x2e,
 	0x50, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x6f, 0x6c, 0x52, 0x08, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63,
-	0x6f, 0x6c, 0x2a, 0x34, 0x0a, 0x08, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x6f, 0x6c, 0x12, 0x14,
-	0x0a, 0x10, 0x50, 0x52, 0x4f, 0x54, 0x4f, 0x43, 0x4f, 0x4c, 0x5f, 0x55, 0x4e, 0x4b, 0x4e, 0x4f,
-	0x57, 0x4e, 0x10, 0x00, 0x12, 0x08, 0x0a, 0x04, 0x47, 0x52, 0x50, 0x43, 0x10, 0x01, 0x12, 0x08,
-	0x0a, 0x04, 0x48, 0x54, 0x54, 0x50, 0x10, 0x02, 0x42, 0x34, 0x5a, 0x32, 0x67, 0x69, 0x74, 0x68,
-	0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x61, 0x69, 0x64, 0x65, 0x2d, 0x66, 0x61, 0x6d, 0x69,
-	0x6c, 0x79, 0x2f, 0x73, 0x6f, 0x76, 0x65, 0x72, 0x65, 0x69, 0x67, 0x6e, 0x2f, 0x70, 0x6b, 0x67,
-	0x2f, 0x63, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x3b, 0x63, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x62, 0x06,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x6f, 0x6c, 0x22, 0xbb, 0x03, 0x0a, 0x06, 0x4f, 0x41, 0x75, 0x74, 0x68, 0x32, 0x12, 0x16, 0x0a,
+	0x06, 0x65, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x06, 0x65,
+	0x6e, 0x61, 0x62, 0x6c, 0x65, 0x12, 0x20, 0x0a, 0x0b, 0x72, 0x65, 0x64, 0x69, 0x72, 0x65, 0x63,
+	0x74, 0x55, 0x72, 0x69, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x72, 0x65, 0x64, 0x69,
+	0x72, 0x65, 0x63, 0x74, 0x55, 0x72, 0x69, 0x12, 0x39, 0x0a, 0x07, 0x63, 0x6f, 0x6e, 0x66, 0x69,
+	0x67, 0x73, 0x18, 0x03, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1f, 0x2e, 0x73, 0x6f, 0x76, 0x65, 0x72,
+	0x65, 0x69, 0x67, 0x6e, 0x2e, 0x63, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x2e, 0x4f, 0x41, 0x75, 0x74,
+	0x68, 0x32, 0x2e, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x52, 0x07, 0x63, 0x6f, 0x6e, 0x66, 0x69,
+	0x67, 0x73, 0x1a, 0x84, 0x02, 0x0a, 0x06, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x12, 0x2e, 0x0a,
+	0x03, 0x61, 0x70, 0x70, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x1c, 0x2e, 0x73, 0x6f, 0x76,
+	0x65, 0x72, 0x65, 0x69, 0x67, 0x6e, 0x2e, 0x63, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x2e, 0x4f, 0x41,
+	0x75, 0x74, 0x68, 0x32, 0x2e, 0x41, 0x50, 0x50, 0x52, 0x03, 0x61, 0x70, 0x70, 0x12, 0x1a, 0x0a,
+	0x08, 0x63, 0x6c, 0x69, 0x65, 0x6e, 0x74, 0x49, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x08, 0x63, 0x6c, 0x69, 0x65, 0x6e, 0x74, 0x49, 0x64, 0x12, 0x22, 0x0a, 0x0c, 0x63, 0x6c, 0x69,
+	0x65, 0x6e, 0x74, 0x53, 0x65, 0x63, 0x72, 0x65, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x0c, 0x63, 0x6c, 0x69, 0x65, 0x6e, 0x74, 0x53, 0x65, 0x63, 0x72, 0x65, 0x74, 0x12, 0x20, 0x0a,
+	0x0b, 0x63, 0x61, 0x6c, 0x6c, 0x62, 0x61, 0x63, 0x6b, 0x55, 0x72, 0x69, 0x18, 0x04, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x0b, 0x63, 0x61, 0x6c, 0x6c, 0x62, 0x61, 0x63, 0x6b, 0x55, 0x72, 0x69, 0x12,
+	0x18, 0x0a, 0x07, 0x61, 0x75, 0x74, 0x68, 0x55, 0x72, 0x6c, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x07, 0x61, 0x75, 0x74, 0x68, 0x55, 0x72, 0x6c, 0x12, 0x1a, 0x0a, 0x08, 0x74, 0x6f, 0x6b,
+	0x65, 0x6e, 0x55, 0x72, 0x6c, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x74, 0x6f, 0x6b,
+	0x65, 0x6e, 0x55, 0x72, 0x6c, 0x12, 0x16, 0x0a, 0x06, 0x73, 0x63, 0x6f, 0x70, 0x65, 0x73, 0x18,
+	0x07, 0x20, 0x03, 0x28, 0x09, 0x52, 0x06, 0x73, 0x63, 0x6f, 0x70, 0x65, 0x73, 0x12, 0x1a, 0x0a,
+	0x08, 0x6c, 0x6f, 0x67, 0x69, 0x6e, 0x55, 0x72, 0x6c, 0x18, 0x08, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x08, 0x6c, 0x6f, 0x67, 0x69, 0x6e, 0x55, 0x72, 0x6c, 0x22, 0x35, 0x0a, 0x03, 0x41, 0x50, 0x50,
+	0x12, 0x0b, 0x0a, 0x07, 0x55, 0x4e, 0x4b, 0x4e, 0x4f, 0x57, 0x4e, 0x10, 0x00, 0x12, 0x0a, 0x0a,
+	0x06, 0x47, 0x49, 0x54, 0x48, 0x55, 0x42, 0x10, 0x01, 0x12, 0x09, 0x0a, 0x05, 0x47, 0x49, 0x54,
+	0x45, 0x45, 0x10, 0x02, 0x12, 0x0a, 0x0a, 0x06, 0x46, 0x45, 0x49, 0x53, 0x48, 0x55, 0x10, 0x03,
+	0x2a, 0x34, 0x0a, 0x08, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x63, 0x6f, 0x6c, 0x12, 0x14, 0x0a, 0x10,
+	0x50, 0x52, 0x4f, 0x54, 0x4f, 0x43, 0x4f, 0x4c, 0x5f, 0x55, 0x4e, 0x4b, 0x4e, 0x4f, 0x57, 0x4e,
+	0x10, 0x00, 0x12, 0x08, 0x0a, 0x04, 0x47, 0x52, 0x50, 0x43, 0x10, 0x01, 0x12, 0x08, 0x0a, 0x04,
+	0x48, 0x54, 0x54, 0x50, 0x10, 0x02, 0x42, 0x34, 0x5a, 0x32, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62,
+	0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x61, 0x69, 0x64, 0x65, 0x2d, 0x66, 0x61, 0x6d, 0x69, 0x6c, 0x79,
+	0x2f, 0x73, 0x6f, 0x76, 0x65, 0x72, 0x65, 0x69, 0x67, 0x6e, 0x2f, 0x70, 0x6b, 0x67, 0x2f, 0x63,
+	0x6f, 0x6e, 0x66, 0x69, 0x67, 0x3b, 0x63, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x62, 0x06, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1190,52 +1430,57 @@ func file_config_config_proto_rawDescGZIP() []byte {
 	return file_config_config_proto_rawDescData
 }
 
-var file_config_config_proto_enumTypes = make([]protoimpl.EnumInfo, 5)
-var file_config_config_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
+var file_config_config_proto_enumTypes = make([]protoimpl.EnumInfo, 6)
+var file_config_config_proto_msgTypes = make([]protoimpl.MessageInfo, 15)
 var file_config_config_proto_goTypes = []any{
 	(Protocol)(0),                // 0: sovereign.config.Protocol
 	(ORMConfig_Dialector)(0),     // 1: sovereign.config.ORMConfig.Dialector
 	(ReportConfig_ReportType)(0), // 2: sovereign.config.ReportConfig.ReportType
 	(NamespaceConfig_Driver)(0),  // 3: sovereign.config.NamespaceConfig.Driver
 	(FileConfig_FileType)(0),     // 4: sovereign.config.FileConfig.FileType
-	(*ClientConfig)(nil),         // 5: sovereign.config.ClientConfig
-	(*ClusterConfig)(nil),        // 6: sovereign.config.ClusterConfig
-	(*ORMConfig)(nil),            // 7: sovereign.config.ORMConfig
-	(*MySQLOptions)(nil),         // 8: sovereign.config.MySQLOptions
-	(*SQLiteOptions)(nil),        // 9: sovereign.config.SQLiteOptions
-	(*ReportConfig)(nil),         // 10: sovereign.config.ReportConfig
-	(*ETCDOptions)(nil),          // 11: sovereign.config.ETCDOptions
-	(*KubernetesOptions)(nil),    // 12: sovereign.config.KubernetesOptions
-	(*BasicAuthConfig)(nil),      // 13: sovereign.config.BasicAuthConfig
-	(*NamespaceConfig)(nil),      // 14: sovereign.config.NamespaceConfig
-	(*FileConfig)(nil),           // 15: sovereign.config.FileConfig
-	(*OuterServerConfig)(nil),    // 16: sovereign.config.OuterServerConfig
-	nil,                          // 17: sovereign.config.MySQLOptions.ParametersEntry
-	(*durationpb.Duration)(nil),  // 18: google.protobuf.Duration
-	(*anypb.Any)(nil),            // 19: google.protobuf.Any
+	(OAuth2_APP)(0),              // 5: sovereign.config.OAuth2.APP
+	(*ClientConfig)(nil),         // 6: sovereign.config.ClientConfig
+	(*ClusterConfig)(nil),        // 7: sovereign.config.ClusterConfig
+	(*ORMConfig)(nil),            // 8: sovereign.config.ORMConfig
+	(*MySQLOptions)(nil),         // 9: sovereign.config.MySQLOptions
+	(*SQLiteOptions)(nil),        // 10: sovereign.config.SQLiteOptions
+	(*ReportConfig)(nil),         // 11: sovereign.config.ReportConfig
+	(*ETCDOptions)(nil),          // 12: sovereign.config.ETCDOptions
+	(*KubernetesOptions)(nil),    // 13: sovereign.config.KubernetesOptions
+	(*BasicAuthConfig)(nil),      // 14: sovereign.config.BasicAuthConfig
+	(*NamespaceConfig)(nil),      // 15: sovereign.config.NamespaceConfig
+	(*FileConfig)(nil),           // 16: sovereign.config.FileConfig
+	(*OuterServerConfig)(nil),    // 17: sovereign.config.OuterServerConfig
+	(*OAuth2)(nil),               // 18: sovereign.config.OAuth2
+	nil,                          // 19: sovereign.config.MySQLOptions.ParametersEntry
+	(*OAuth2_Config)(nil),        // 20: sovereign.config.OAuth2.Config
+	(*durationpb.Duration)(nil),  // 21: google.protobuf.Duration
+	(*anypb.Any)(nil),            // 22: google.protobuf.Any
 }
 var file_config_config_proto_depIdxs = []int32{
-	6,  // 0: sovereign.config.ClientConfig.cluster:type_name -> sovereign.config.ClusterConfig
-	10, // 1: sovereign.config.ClientConfig.report:type_name -> sovereign.config.ReportConfig
-	18, // 2: sovereign.config.ClusterConfig.timeout:type_name -> google.protobuf.Duration
+	7,  // 0: sovereign.config.ClientConfig.cluster:type_name -> sovereign.config.ClusterConfig
+	11, // 1: sovereign.config.ClientConfig.report:type_name -> sovereign.config.ReportConfig
+	21, // 2: sovereign.config.ClusterConfig.timeout:type_name -> google.protobuf.Duration
 	0,  // 3: sovereign.config.ClusterConfig.protocol:type_name -> sovereign.config.Protocol
 	1,  // 4: sovereign.config.ORMConfig.dialector:type_name -> sovereign.config.ORMConfig.Dialector
-	19, // 5: sovereign.config.ORMConfig.options:type_name -> google.protobuf.Any
-	17, // 6: sovereign.config.MySQLOptions.parameters:type_name -> sovereign.config.MySQLOptions.ParametersEntry
+	22, // 5: sovereign.config.ORMConfig.options:type_name -> google.protobuf.Any
+	19, // 6: sovereign.config.MySQLOptions.parameters:type_name -> sovereign.config.MySQLOptions.ParametersEntry
 	2,  // 7: sovereign.config.ReportConfig.reportType:type_name -> sovereign.config.ReportConfig.ReportType
-	19, // 8: sovereign.config.ReportConfig.options:type_name -> google.protobuf.Any
-	18, // 9: sovereign.config.ETCDOptions.dialTimeout:type_name -> google.protobuf.Duration
+	22, // 8: sovereign.config.ReportConfig.options:type_name -> google.protobuf.Any
+	21, // 9: sovereign.config.ETCDOptions.dialTimeout:type_name -> google.protobuf.Duration
 	3,  // 10: sovereign.config.NamespaceConfig.driver:type_name -> sovereign.config.NamespaceConfig.Driver
-	19, // 11: sovereign.config.NamespaceConfig.options:type_name -> google.protobuf.Any
+	22, // 11: sovereign.config.NamespaceConfig.options:type_name -> google.protobuf.Any
 	4,  // 12: sovereign.config.FileConfig.fileType:type_name -> sovereign.config.FileConfig.FileType
-	18, // 13: sovereign.config.FileConfig.storageInterval:type_name -> google.protobuf.Duration
-	18, // 14: sovereign.config.OuterServerConfig.timeout:type_name -> google.protobuf.Duration
+	21, // 13: sovereign.config.FileConfig.storageInterval:type_name -> google.protobuf.Duration
+	21, // 14: sovereign.config.OuterServerConfig.timeout:type_name -> google.protobuf.Duration
 	0,  // 15: sovereign.config.OuterServerConfig.protocol:type_name -> sovereign.config.Protocol
-	16, // [16:16] is the sub-list for method output_type
-	16, // [16:16] is the sub-list for method input_type
-	16, // [16:16] is the sub-list for extension type_name
-	16, // [16:16] is the sub-list for extension extendee
-	0,  // [0:16] is the sub-list for field type_name
+	20, // 16: sovereign.config.OAuth2.configs:type_name -> sovereign.config.OAuth2.Config
+	5,  // 17: sovereign.config.OAuth2.Config.app:type_name -> sovereign.config.OAuth2.APP
+	18, // [18:18] is the sub-list for method output_type
+	18, // [18:18] is the sub-list for method input_type
+	18, // [18:18] is the sub-list for extension type_name
+	18, // [18:18] is the sub-list for extension extendee
+	0,  // [0:18] is the sub-list for field type_name
 }
 
 func init() { file_config_config_proto_init() }
@@ -1248,8 +1493,8 @@ func file_config_config_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_config_config_proto_rawDesc,
-			NumEnums:      5,
-			NumMessages:   13,
+			NumEnums:      6,
+			NumMessages:   15,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

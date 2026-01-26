@@ -6,6 +6,10 @@ import (
 	nethttp "net/http"
 	"strings"
 
+	_ "github.com/aide-family/sovereign/pkg/api/auth/feishu"
+	_ "github.com/aide-family/sovereign/pkg/api/auth/gitee"
+	_ "github.com/aide-family/sovereign/pkg/api/auth/github"
+
 	"buf.build/go/protoyaml"
 	"github.com/go-kratos/kratos/v2/encoding"
 	"github.com/go-kratos/kratos/v2/encoding/json"
@@ -21,6 +25,7 @@ import (
 	"github.com/aide-family/sovereign/internal/conf"
 	"github.com/aide-family/sovereign/internal/service"
 	"github.com/aide-family/sovereign/pkg/api"
+	"github.com/aide-family/sovereign/pkg/api/auth"
 	apiv1 "github.com/aide-family/sovereign/pkg/api/v1"
 )
 
@@ -170,6 +175,11 @@ func RegisterHTTPService(
 ) Servers {
 	apiv1.RegisterHealthHTTPServer(httpSrv, healthService)
 	apiv1.RegisterNamespaceHTTPServer(httpSrv, namespaceService)
+
+	oauth2Handler := auth.NewOAuth2Handler(c.GetOauth2(), func(ctx http.Context, user auth.User) (string, error) {
+		return "", nil
+	})
+	oauth2Handler.Handler(httpSrv)
 	return Servers{newServer("http", httpSrv)}
 }
 
