@@ -2,6 +2,7 @@
 package auth
 
 import (
+	"context"
 	nethttp "net/http"
 	"net/url"
 	"strings"
@@ -19,6 +20,8 @@ import (
 const (
 	loginRoutePath  = "login"
 	reportRoutePath = "reports"
+
+	OperationOAuth2Reports = "/sovereign.api.auth.OAuth2/OAuth2Reports"
 )
 
 func NewOAuth2Handler(conf *config.OAuth2, generateTokenFunc GenerateTokenFunc) *OAuth2Handler {
@@ -132,17 +135,24 @@ func (h *OAuth2Handler) Handler(srv *http.Server) error {
 }
 
 func (h *OAuth2Handler) OAuth2Reports() http.HandlerFunc {
-	reports := make([]*OAuth2ReportItem, 0, len(h.conf.GetConfigs()))
+	reports := make([]OAuth2ReportItem, 0, len(h.conf.GetConfigs()))
 	for _, config := range h.conf.GetConfigs() {
-		reports = append(reports, &OAuth2ReportItem{
+		reports = append(reports, OAuth2ReportItem{
 			App:      config.GetApp().String(),
 			LoginUrl: config.GetLoginUrl(),
 		})
 	}
 	return func(ctx http.Context) error {
-		tmpReports := make([]*OAuth2ReportItem, 0, len(reports))
-		copy(tmpReports, reports)
-		return ctx.Result(nethttp.StatusOK, tmpReports)
+		http.SetOperation(ctx, OperationOAuth2Reports)
+		h := ctx.Middleware(func(ctx context.Context, _ interface{}) (interface{}, error) {
+			return append([]OAuth2ReportItem{}, reports...), nil
+		})
+		out, err := h(ctx, nil)
+		if err != nil {
+			return err
+		}
+		reply := out.([]OAuth2ReportItem)
+		return ctx.Result(nethttp.StatusOK, reply)
 	}
 }
 

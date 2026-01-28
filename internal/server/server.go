@@ -205,4 +205,5 @@ var namespaceAllowList = []string{
 
 var authAllowList = []string{
 	apiv1.OperationHealthHealthCheck,
+	auth.OperationOAuth2Reports,
 }
