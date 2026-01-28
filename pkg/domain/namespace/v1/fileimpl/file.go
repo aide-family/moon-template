@@ -23,18 +23,18 @@ import (
 	"google.golang.org/protobuf/types/known/anypb"
 
 	"github.com/aide-family/sovereign/pkg/config"
+	domain "github.com/aide-family/sovereign/pkg/domain"
+	namespacev1 "github.com/aide-family/sovereign/pkg/domain/namespace/v1"
+	"github.com/aide-family/sovereign/pkg/domain/namespace/v1/fileimpl/model"
 	"github.com/aide-family/sovereign/pkg/enum"
 	"github.com/aide-family/sovereign/pkg/merr"
-	"github.com/aide-family/sovereign/pkg/repo"
-	namespacev1 "github.com/aide-family/sovereign/pkg/repo/namespace/v1"
-	"github.com/aide-family/sovereign/pkg/repo/namespace/v1/fileimpl/model"
 )
 
 func init() {
-	repo.RegisterNamespaceV1Factory(config.NamespaceConfig_FILE, NewFileRepository)
+	domain.RegisterNamespaceV1Factory(config.DomainConfig_FILE, NewFileRepository)
 }
 
-func NewFileRepository(c *config.NamespaceConfig) (namespacev1.Repository, func() error, error) {
+func NewFileRepository(c *config.DomainConfig) (namespacev1.Repository, func() error, error) {
 	fileConfig := &config.FileConfig{}
 	if pointer.IsNotNil(c.GetOptions()) {
 		if err := anypb.UnmarshalTo(c.GetOptions(), fileConfig, proto.UnmarshalOptions{Merge: true}); err != nil {
@@ -74,7 +74,7 @@ func NewFileRepository(c *config.NamespaceConfig) (namespacev1.Repository, func(
 }
 
 type fileRepository struct {
-	repoConfig      *config.NamespaceConfig
+	repoConfig      *config.DomainConfig
 	fileConfig      *config.FileConfig
 	tmpFilepath     string
 	filepath        string

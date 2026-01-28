@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-package repo.namespace.v1;
+package domain.namespace.v1;
 
-option go_package = "github.com/aide-family/sovereign/pkg/repo/namespace/v1;namespacev1";
+option go_package = "github.com/aide-family/sovereign/pkg/domain/namespace/v1;namespacev1";
 
 import "enum/enum.proto";
 

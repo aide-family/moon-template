@@ -1,8 +1,8 @@
 package impl
 
 import (
-	_ "github.com/aide-family/sovereign/pkg/repo/namespace/v1/fileimpl"
-	_ "github.com/aide-family/sovereign/pkg/repo/namespace/v1/gormimpl"
+	_ "github.com/aide-family/sovereign/pkg/domain/namespace/v1/fileimpl"
+	_ "github.com/aide-family/sovereign/pkg/domain/namespace/v1/gormimpl"
 
 	"context"
 	"time"
@@ -14,10 +14,10 @@ import (
 	"github.com/aide-family/sovereign/internal/biz/vobj"
 	"github.com/aide-family/sovereign/internal/conf"
 	"github.com/aide-family/sovereign/internal/data"
+	"github.com/aide-family/sovereign/pkg/domain"
+	namespacev1 "github.com/aide-family/sovereign/pkg/domain/namespace/v1"
 	"github.com/aide-family/sovereign/pkg/enum"
 	"github.com/aide-family/sovereign/pkg/merr"
-	"github.com/aide-family/sovereign/pkg/repo"
-	namespacev1 "github.com/aide-family/sovereign/pkg/repo/namespace/v1"
 )
 
 func NewNamespaceRepository(c *conf.Bootstrap, d *data.Data) (repository.Namespace, error) {
@@ -26,7 +26,7 @@ func NewNamespaceRepository(c *conf.Bootstrap, d *data.Data) (repository.Namespa
 	driver := repoConfig.GetDriver()
 	switch version {
 	default:
-		factory, ok := repo.GetNamespaceV1Factory(driver)
+		factory, ok := domain.GetNamespaceV1Factory(driver)
 		if !ok {
 			return nil, merr.ErrorInternalServer("namespace repository factory not found")
 		}

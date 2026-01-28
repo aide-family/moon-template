@@ -1,4 +1,4 @@
-package middler_test
+package authv1_test
 
 import (
 	"strings"
@@ -10,8 +10,8 @@ import (
 	"github.com/bwmarrin/snowflake"
 	"google.golang.org/protobuf/types/known/durationpb"
 
-	"github.com/aide-family/sovereign/internal/conf"
-	"github.com/aide-family/sovereign/pkg/middler"
+	"github.com/aide-family/sovereign/pkg/config"
+	authv1 "github.com/aide-family/sovereign/pkg/domain/auth/v1"
 )
 
 func TestGetJwtToken(t *testing.T) {
@@ -21,12 +21,12 @@ func TestGetJwtToken(t *testing.T) {
 	if err != nil {
 		t.Fatalf("NewNode failed: %v", err)
 	}
-	claims := middler.NewJwtClaims(&conf.JWT{
+	claims := authv1.NewJwtClaims(&config.JWT{
 		Secret: "xxx",
 		Expire: durationpb.New(24 * 365 * time.Hour),
 		Issuer: "sovereign-test",
-	}, middler.BaseInfo{
-		UserID:   node.Generate(),
+	}, authv1.BaseInfo{
+		UID:      node.Generate(),
 		Username: hello.ID(),
 	})
 	token, err := claims.GenerateToken()

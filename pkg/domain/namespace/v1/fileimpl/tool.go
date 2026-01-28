@@ -3,9 +3,9 @@ package fileimpl
 import (
 	"encoding/json"
 
+	namespacev1 "github.com/aide-family/sovereign/pkg/domain/namespace/v1"
+	"github.com/aide-family/sovereign/pkg/domain/namespace/v1/fileimpl/model"
 	"github.com/aide-family/sovereign/pkg/enum"
-	namespacev1 "github.com/aide-family/sovereign/pkg/repo/namespace/v1"
-	"github.com/aide-family/sovereign/pkg/repo/namespace/v1/fileimpl/model"
 )
 
 func convertNamespaceModel(namespaceModel *model.NamespaceModel) *namespacev1.NamespaceModel {

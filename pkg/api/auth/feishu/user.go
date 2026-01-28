@@ -56,3 +56,13 @@ func (u *User) GetRaw() []byte {
 	raw, _ := json.Marshal(u)
 	return raw
 }
+
+// GetRemark implements [auth.User].
+func (u *User) GetRemark() string {
+	return ""
+}
+
+// GetNickname implements [auth.User].
+func (u *User) GetNickname() string {
+	return u.EnName
+}

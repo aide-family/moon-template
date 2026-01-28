@@ -14,6 +14,12 @@ message ClientConfig {
 	string namespace = 4;
 }
 
+message JWT {
+	string secret = 1;
+	google.protobuf.Duration expire = 2;
+	string issuer = 3;
+}
+
 enum Protocol {
 	PROTOCOL_UNKNOWN = 0;
 	GRPC = 1;
@@ -80,7 +86,7 @@ message BasicAuthConfig {
 	string enabled = 3;
 }
 
-message NamespaceConfig {
+message DomainConfig {
 	enum Driver {
 		FILE = 0;
 		GORM = 1;

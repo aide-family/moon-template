@@ -9,7 +9,7 @@ import (
 	"gorm.io/gen"
 	"gorm.io/gorm"
 
-	"github.com/aide-family/sovereign/pkg/repo/namespace/v1/gormimpl/model"
+	"github.com/aide-family/sovereign/pkg/domain/namespace/v1/gormimpl/model"
 )
 
 var genConfig = gen.Config{

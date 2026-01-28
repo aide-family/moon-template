@@ -59,7 +59,7 @@ func (g *GiteeUser) GetEmail() string {
 
 // GetName implements [auth.User].
 func (g *GiteeUser) GetName() string {
-	return g.Name
+	return g.Login
 }
 
 // GetOpenID implements [auth.User].
@@ -71,4 +71,14 @@ func (g *GiteeUser) GetOpenID() string {
 func (g *GiteeUser) GetRaw() []byte {
 	raw, _ := json.Marshal(g)
 	return raw
+}
+
+// GetRemark implements [auth.User].
+func (g *GiteeUser) GetRemark() string {
+	return g.Remark
+}
+
+// GetNickname implements [auth.User].
+func (g *GiteeUser) GetNickname() string {
+	return g.Name
 }

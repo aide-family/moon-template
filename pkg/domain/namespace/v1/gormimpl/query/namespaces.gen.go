@@ -8,7 +8,7 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/aide-family/sovereign/pkg/repo/namespace/v1/gormimpl/model"
+	"github.com/aide-family/sovereign/pkg/domain/namespace/v1/gormimpl/model"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"gorm.io/gorm/schema"

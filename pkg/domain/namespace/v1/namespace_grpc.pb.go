@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v5.29.3
-// source: repo/namespace/v1/namespace.proto
+// source: domain/namespace/v1/namespace.proto
 
 package namespacev1
 
@@ -19,14 +19,14 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	NamespaceService_CreateNamespace_FullMethodName       = "/repo.namespace.v1.NamespaceService/CreateNamespace"
-	NamespaceService_GetNamespace_FullMethodName          = "/repo.namespace.v1.NamespaceService/GetNamespace"
-	NamespaceService_UpdateNamespace_FullMethodName       = "/repo.namespace.v1.NamespaceService/UpdateNamespace"
-	NamespaceService_DeleteNamespace_FullMethodName       = "/repo.namespace.v1.NamespaceService/DeleteNamespace"
-	NamespaceService_ListNamespace_FullMethodName         = "/repo.namespace.v1.NamespaceService/ListNamespace"
-	NamespaceService_SelectNamespace_FullMethodName       = "/repo.namespace.v1.NamespaceService/SelectNamespace"
-	NamespaceService_UpdateNamespaceStatus_FullMethodName = "/repo.namespace.v1.NamespaceService/UpdateNamespaceStatus"
-	NamespaceService_GetNamespaceByName_FullMethodName    = "/repo.namespace.v1.NamespaceService/GetNamespaceByName"
+	NamespaceService_CreateNamespace_FullMethodName       = "/domain.namespace.v1.NamespaceService/CreateNamespace"
+	NamespaceService_GetNamespace_FullMethodName          = "/domain.namespace.v1.NamespaceService/GetNamespace"
+	NamespaceService_UpdateNamespace_FullMethodName       = "/domain.namespace.v1.NamespaceService/UpdateNamespace"
+	NamespaceService_DeleteNamespace_FullMethodName       = "/domain.namespace.v1.NamespaceService/DeleteNamespace"
+	NamespaceService_ListNamespace_FullMethodName         = "/domain.namespace.v1.NamespaceService/ListNamespace"
+	NamespaceService_SelectNamespace_FullMethodName       = "/domain.namespace.v1.NamespaceService/SelectNamespace"
+	NamespaceService_UpdateNamespaceStatus_FullMethodName = "/domain.namespace.v1.NamespaceService/UpdateNamespaceStatus"
+	NamespaceService_GetNamespaceByName_FullMethodName    = "/domain.namespace.v1.NamespaceService/GetNamespaceByName"
 )
 
 // NamespaceServiceClient is the client API for NamespaceService service.
@@ -346,7 +346,7 @@ func _NamespaceService_GetNamespaceByName_Handler(srv interface{}, ctx context.C
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var NamespaceService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "repo.namespace.v1.NamespaceService",
+	ServiceName: "domain.namespace.v1.NamespaceService",
 	HandlerType: (*NamespaceServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -383,5 +383,5 @@ var NamespaceService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "repo/namespace/v1/namespace.proto",
+	Metadata: "domain/namespace/v1/namespace.proto",
 }

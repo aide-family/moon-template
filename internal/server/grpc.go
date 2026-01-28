@@ -13,6 +13,7 @@ import (
 
 	"github.com/aide-family/sovereign/internal/conf"
 	"github.com/aide-family/sovereign/internal/service"
+	authv1 "github.com/aide-family/sovereign/pkg/domain/auth/v1"
 	sovereignMiddler "github.com/aide-family/sovereign/pkg/middler"
 )
 
@@ -28,7 +29,7 @@ func newGRPCServer(grpcConf conf.ServerConfig, jwtConf conf.JWTConfig, namespace
 	}
 	namespaceMiddleware := selector.Server(selectorNamespaceMiddlewares...).Match(middler.AllowListMatcher(namespaceAllowList...)).Build()
 	selectorMustAuthMiddlewares := []middleware.Middleware{
-		sovereignMiddler.JwtServe(jwtConf.GetSecret()),
+		sovereignMiddler.JwtServe(jwtConf.GetSecret(), &authv1.JwtClaims{}),
 		sovereignMiddler.MustLogin(),
 		sovereignMiddler.BindJwtToken(),
 		namespaceMiddleware,

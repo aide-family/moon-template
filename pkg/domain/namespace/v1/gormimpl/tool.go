@@ -5,9 +5,9 @@ import (
 
 	"gorm.io/gen"
 
+	namespacev1 "github.com/aide-family/sovereign/pkg/domain/namespace/v1"
+	"github.com/aide-family/sovereign/pkg/domain/namespace/v1/gormimpl/model"
 	"github.com/aide-family/sovereign/pkg/enum"
-	namespacev1 "github.com/aide-family/sovereign/pkg/repo/namespace/v1"
-	"github.com/aide-family/sovereign/pkg/repo/namespace/v1/gormimpl/model"
 )
 
 func ConvertNamespaceModel(namespaceDo *model.Namespace) *namespacev1.NamespaceModel {

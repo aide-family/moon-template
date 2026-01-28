@@ -16,16 +16,16 @@ import (
 
 	"github.com/aide-family/sovereign/pkg/config"
 	"github.com/aide-family/sovereign/pkg/connect"
+	domain "github.com/aide-family/sovereign/pkg/domain"
+	namespacev1 "github.com/aide-family/sovereign/pkg/domain/namespace/v1"
+	"github.com/aide-family/sovereign/pkg/domain/namespace/v1/gormimpl/model"
+	"github.com/aide-family/sovereign/pkg/domain/namespace/v1/gormimpl/query"
 	"github.com/aide-family/sovereign/pkg/enum"
 	"github.com/aide-family/sovereign/pkg/merr"
-	"github.com/aide-family/sovereign/pkg/repo"
-	namespacev1 "github.com/aide-family/sovereign/pkg/repo/namespace/v1"
-	"github.com/aide-family/sovereign/pkg/repo/namespace/v1/gormimpl/model"
-	"github.com/aide-family/sovereign/pkg/repo/namespace/v1/gormimpl/query"
 )
 
 func init() {
-	repo.RegisterNamespaceV1Factory(config.NamespaceConfig_GORM, NewGormRepository)
+	domain.RegisterNamespaceV1Factory(config.DomainConfig_GORM, NewGormRepository)
 }
 
 type Field interface {
@@ -33,7 +33,7 @@ type Field interface {
 	Asc() field.Expr
 }
 
-func NewGormRepository(c *config.NamespaceConfig) (namespacev1.Repository, func() error, error) {
+func NewGormRepository(c *config.DomainConfig) (namespacev1.Repository, func() error, error) {
 	ormConfig := &config.ORMConfig{}
 	if pointer.IsNotNil(c.GetOptions()) {
 		if err := anypb.UnmarshalTo(c.GetOptions(), ormConfig, proto.UnmarshalOptions{Merge: true}); err != nil {
@@ -64,7 +64,7 @@ func NewGormRepository(c *config.NamespaceConfig) (namespacev1.Repository, func(
 }
 
 type gormRepository struct {
-	repoConfig *config.NamespaceConfig
+	repoConfig *config.DomainConfig
 	db         *gorm.DB
 	fields     *safety.Map[namespacev1.Field, Field]
 	node       *snowflake.Node

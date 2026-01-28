@@ -24,24 +24,24 @@ const (
 	OperationOAuth2Reports = "/sovereign.api.auth.OAuth2/OAuth2Reports"
 )
 
-func NewOAuth2Handler(conf *config.OAuth2, generateTokenFunc GenerateTokenFunc) *OAuth2Handler {
+func NewOAuth2Handler(conf *config.OAuth2, redirectURLFunc RedirectURLFunc) *OAuth2Handler {
 	return &OAuth2Handler{
-		conf:              conf,
-		generateTokenFunc: generateTokenFunc,
-		oauth2RoutePath:   "/oauth2",
-		loginPath:         "/",
-		callbackPath:      "/callback",
-		loginHandler:      DefaultLoginHandler,
-		callbackHandler:   DefaultCallbackHandler,
-		oauth2Configs:     safety.NewMap(make(map[config.OAuth2_APP]*oauth2.Config)),
+		conf:            conf,
+		redirectURLFunc: redirectURLFunc,
+		oauth2RoutePath: "/oauth2",
+		loginPath:       "/",
+		callbackPath:    "/callback",
+		loginHandler:    DefaultLoginHandler,
+		callbackHandler: DefaultCallbackHandler,
+		oauth2Configs:   safety.NewMap(make(map[config.OAuth2_APP]*oauth2.Config)),
 	}
 }
 
 type OAuth2Handler struct {
-	conf              *config.OAuth2
-	loginHandler      OAuth2LoginHandlerFunc
-	callbackHandler   OAuth2CallbackHandlerFunc
-	generateTokenFunc GenerateTokenFunc
+	conf            *config.OAuth2
+	loginHandler    OAuth2LoginHandlerFunc
+	callbackHandler OAuth2CallbackHandlerFunc
+	redirectURLFunc RedirectURLFunc
 
 	oauth2RoutePath string
 	loginPath       string
@@ -52,10 +52,10 @@ type OAuth2Handler struct {
 
 type OAuth2HandlerOption func(*OAuth2Handler)
 
-type OAuth2CallbackHandlerFunc func(app config.OAuth2_APP, oauthConfig *oauth2.Config, generateTokenFunc GenerateTokenFunc) (http.HandlerFunc, error)
+type OAuth2CallbackHandlerFunc func(app config.OAuth2_APP, oauthConfig *oauth2.Config, redirectURLFunc RedirectURLFunc) (http.HandlerFunc, error)
 type OAuth2LoginHandlerFunc func(app config.OAuth2_APP, oauthConfig *oauth2.Config) (http.HandlerFunc, error)
 type OAuth2LoginFun func(ctx http.Context, oauthConfig *oauth2.Config) (User, error)
-type GenerateTokenFunc func(ctx http.Context, user User) (string, error)
+type RedirectURLFunc func(ctx http.Context, oauthConfig *oauth2.Config, user User) (string, error)
 
 func RegisterLoginHandler(handler OAuth2LoginHandlerFunc) OAuth2HandlerOption {
 	return func(h *OAuth2Handler) {
@@ -116,7 +116,7 @@ func (h *OAuth2Handler) Handler(srv *http.Server) error {
 			return err
 		}
 		appRoute.GET(h.loginPath, loginHandler)
-		callbackHandler, err := h.callbackHandler(app, authConfigItem, h.generateTokenFunc)
+		callbackHandler, err := h.callbackHandler(app, authConfigItem, h.redirectURLFunc)
 		if err != nil {
 			return err
 		}
@@ -169,7 +169,7 @@ func DefaultLoginHandler(app config.OAuth2_APP, oauthConfig *oauth2.Config) (htt
 	}, nil
 }
 
-func DefaultCallbackHandler(app config.OAuth2_APP, oauthConfig *oauth2.Config, generateTokenFunc GenerateTokenFunc) (http.HandlerFunc, error) {
+func DefaultCallbackHandler(app config.OAuth2_APP, oauthConfig *oauth2.Config, redirectURLFunc RedirectURLFunc) (http.HandlerFunc, error) {
 	login, ok := GetOAuth2LoginFun(app)
 	if !ok {
 		return nil, merr.ErrorInternal("app %s login fun not registered", app)
@@ -179,17 +179,14 @@ func DefaultCallbackHandler(app config.OAuth2_APP, oauthConfig *oauth2.Config, g
 		if err != nil {
 			return merr.ErrorInternal("login failed").WithCause(err)
 		}
-		token, err := generateTokenFunc(ctx, user)
+		redirectURLStr, err := redirectURLFunc(ctx, oauthConfig, user)
 		if err != nil {
-			return merr.ErrorInternal("generate token failed").WithCause(err)
+			return merr.ErrorInternal("redirect URL function failed").WithCause(err)
 		}
-		redirectURL, err := url.Parse(oauthConfig.RedirectURL)
+		redirectURL, err := url.Parse(redirectURLStr)
 		if err != nil {
 			return merr.ErrorInternal("invalid redirect URL").WithCause(err)
 		}
-		query := redirectURL.Query()
-		query.Set("token", token)
-		redirectURL.RawQuery = query.Encode()
 		req := ctx.Request()
 		resp := ctx.Response()
 		resp.Header().Set("Location", redirectURL.String())

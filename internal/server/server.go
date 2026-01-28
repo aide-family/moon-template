@@ -146,12 +146,14 @@ func RegisterService(
 	c *conf.Bootstrap,
 	httpSrv *http.Server,
 	grpcSrv *grpc.Server,
+	authService *service.AuthService,
 	healthService *service.HealthService,
 	namespaceService *service.NamespaceService,
 ) Servers {
 	var srvs Servers
 
 	srvs = append(srvs, RegisterHTTPService(c, httpSrv,
+		authService,
 		healthService,
 		namespaceService,
 	)...)
@@ -166,15 +168,14 @@ func RegisterService(
 func RegisterHTTPService(
 	c *conf.Bootstrap,
 	httpSrv *http.Server,
+	authService *service.AuthService,
 	healthService *service.HealthService,
 	namespaceService *service.NamespaceService,
 ) Servers {
 	apiv1.RegisterHealthHTTPServer(httpSrv, healthService)
 	apiv1.RegisterNamespaceHTTPServer(httpSrv, namespaceService)
 
-	oauth2Handler := auth.NewOAuth2Handler(c.GetOauth2(), func(ctx http.Context, user auth.User) (string, error) {
-		return "", nil
-	})
+	oauth2Handler := auth.NewOAuth2Handler(c.GetOauth2(), authService.Login)
 	if err := oauth2Handler.Handler(httpSrv); err != nil {
 		panic(err)
 	}

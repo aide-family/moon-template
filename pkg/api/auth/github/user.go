@@ -63,7 +63,7 @@ func (u *User) GetEmail() string {
 
 // GetName implements [auth.User].
 func (u *User) GetName() string {
-	return u.Name
+	return u.Login
 }
 
 // GetOpenID implements [auth.User].
@@ -75,4 +75,14 @@ func (u *User) GetOpenID() string {
 func (u *User) GetRaw() []byte {
 	raw, _ := json.Marshal(u)
 	return raw
+}
+
+// GetRemark implements [auth.User].
+func (u *User) GetRemark() string {
+	return u.Bio
+}
+
+// GetNickname implements [auth.User].
+func (u *User) GetNickname() string {
+	return u.Name
 }
