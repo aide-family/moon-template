@@ -52,5 +52,4 @@ description.txt
 # bin
 bin/
 
-# data
-data/
+.data/

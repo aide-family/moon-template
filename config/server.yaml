@@ -32,7 +32,7 @@ namespaceConfig:
   version: ${MOON_SOVEREIGN_NAMESPACE_VERSION:v1}
   options:
     '@type': "${MOON_SOVEREIGN_NAMESPACE_OPTIONS_TYPE:type.googleapis.com/sovereign.config.FileConfig}"
-    path: "${MOON_SOVEREIGN_NAMESPACE_OPTIONS_PATH:./data/namespace}"
+    path: "${MOON_SOVEREIGN_NAMESPACE_OPTIONS_PATH:./.data/namespace}"
     filename: "${MOON_SOVEREIGN_NAMESPACE_OPTIONS_FILENAME:namespaces.yaml}"
     storageInterval: "${MOON_SOVEREIGN_NAMESPACE_OPTIONS_STORAGE_INTERVAL:10s}"
     # '@type': "${MOON_SOVEREIGN_NAMESPACE_OPTIONS_TYPE:type.googleapis.com/sovereign.config.ORMConfig}"
