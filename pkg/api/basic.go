@@ -24,8 +24,6 @@ type HandlerBinding struct {
 	BasicAuth BasicAuthConfig
 	Handler   nethttp.Handler
 	Path      string
-	UsePrefix bool
-	FullPath  string
 }
 
 func BindHandlerWithAuth(httpSrv *http.Server, binding HandlerBinding) {
@@ -34,24 +32,14 @@ func BindHandlerWithAuth(httpSrv *http.Server, binding HandlerBinding) {
 		return
 	}
 
-	endpoint, err := httpSrv.Endpoint()
-	if err != nil {
-		klog.Errorw("msg", "get http server endpoint failed", "error", err)
-		return
-	}
-
 	handler := binding.Handler
 	basicAuth := binding.BasicAuth
 	if pointer.IsNotNil(basicAuth) && strings.EqualFold(basicAuth.GetEnabled(), "true") {
 		handler = middler.BasicAuthMiddleware(basicAuth.GetUsername(), basicAuth.GetPassword())(handler)
-		klog.Debugf("[%s] endpoint: %s%s (Basic Auth: %s:%s)", binding.Name, endpoint, binding.FullPath, basicAuth.GetUsername(), basicAuth.GetPassword())
+		klog.Debugf("%s route: %s (Basic Auth: %s:%s)", binding.Name, binding.Path, basicAuth.GetUsername(), basicAuth.GetPassword())
 	} else {
-		klog.Debugf("[%s] endpoint: %s%s (No Basic Auth)", binding.Name, endpoint, binding.FullPath)
+		klog.Debugf("%s route: %s (No Basic Auth)", binding.Name, binding.Path)
 	}
 
-	if binding.UsePrefix {
-		httpSrv.HandlePrefix(binding.Path, handler)
-	} else {
-		httpSrv.Handle(binding.Path, handler)
-	}
+	httpSrv.HandlePrefix(binding.Path, handler)
 }

@@ -129,7 +129,7 @@ message OAuth2 {
      string loginUrl = 8;
    }
 
-   bool enable = 1;
+   string enable = 1;
    string redirectUri = 2;
    repeated Config configs = 3;
 }

@@ -16,6 +16,11 @@ import (
 	"github.com/aide-family/sovereign/pkg/merr"
 )
 
+const (
+	loginRoutePath  = "login"
+	reportRoutePath = "reports"
+)
+
 func NewOAuth2Handler(conf *config.OAuth2, generateTokenFunc GenerateTokenFunc) *OAuth2Handler {
 	return &OAuth2Handler{
 		conf:              conf,
@@ -80,12 +85,14 @@ func BindCallbackPath(callbackPath string) OAuth2HandlerOption {
 }
 
 func (h *OAuth2Handler) Handler(srv *http.Server) error {
-	if pointer.IsNil(h.conf) || !h.conf.GetEnable() {
-		klog.Warn("oauth2 is not enabled")
+	if pointer.IsNil(h.conf) || !strings.EqualFold(h.conf.GetEnable(), "true") {
+		klog.Debug("oauth2 is not enabled")
 		return nil
 	}
 
+	routePrintList := make([]string, 0, len(h.conf.GetConfigs()))
 	oauth2Route := srv.Route(h.oauth2RoutePath)
+	loginRoute := oauth2Route.Group(loginRoutePath)
 	for _, config := range h.conf.GetConfigs() {
 		app := config.GetApp()
 		authConfigItem := &oauth2.Config{
@@ -100,7 +107,7 @@ func (h *OAuth2Handler) Handler(srv *http.Server) error {
 		}
 		h.oauth2Configs.Set(app, authConfigItem)
 		appPath := strings.ToLower(app.String())
-		appRoute := oauth2Route.Group(appPath)
+		appRoute := loginRoute.Group(appPath)
 		loginHandler, err := h.loginHandler(app, authConfigItem)
 		if err != nil {
 			return err
@@ -111,8 +118,32 @@ func (h *OAuth2Handler) Handler(srv *http.Server) error {
 			return err
 		}
 		appRoute.GET(h.callbackPath, callbackHandler)
+		loginURL, _ := url.JoinPath(h.oauth2RoutePath, loginRoutePath, appPath, h.loginPath)
+		callbackURL, _ := url.JoinPath(h.oauth2RoutePath, loginRoutePath, appPath, h.callbackPath)
+		routePrintList = append(routePrintList, loginURL, callbackURL)
+	}
+	oauth2Route.GET(reportRoutePath, h.OAuth2Reports())
+	reportURL, _ := url.JoinPath(h.oauth2RoutePath, reportRoutePath)
+	routePrintList = append(routePrintList, reportURL)
+	for _, route := range routePrintList {
+		klog.Debugf("OAuth2 route: %s", route)
 	}
 	return nil
+}
+
+func (h *OAuth2Handler) OAuth2Reports() http.HandlerFunc {
+	reports := make([]*OAuth2ReportItem, 0, len(h.conf.GetConfigs()))
+	for _, config := range h.conf.GetConfigs() {
+		reports = append(reports, &OAuth2ReportItem{
+			App:      config.GetApp().String(),
+			LoginUrl: config.GetLoginUrl(),
+		})
+	}
+	return func(ctx http.Context) error {
+		tmpReports := make([]*OAuth2ReportItem, 0, len(reports))
+		copy(tmpReports, reports)
+		return ctx.Result(nethttp.StatusOK, tmpReports)
+	}
 }
 
 func DefaultLoginHandler(app config.OAuth2_APP, oauthConfig *oauth2.Config) (http.HandlerFunc, error) {
@@ -131,7 +162,7 @@ func DefaultLoginHandler(app config.OAuth2_APP, oauthConfig *oauth2.Config) (htt
 func DefaultCallbackHandler(app config.OAuth2_APP, oauthConfig *oauth2.Config, generateTokenFunc GenerateTokenFunc) (http.HandlerFunc, error) {
 	login, ok := GetOAuth2LoginFun(app)
 	if !ok {
-		return nil, merr.ErrorInternal("login fun not registered")
+		return nil, merr.ErrorInternal("app %s login fun not registered", app)
 	}
 	return func(ctx http.Context) error {
 		user, err := login(ctx, oauthConfig)

@@ -126,8 +126,6 @@ func BindSwagger(httpSrv *http.Server, bc *conf.Bootstrap) {
 		BasicAuth: bc.GetSwaggerBasicAuth(),
 		Handler:   nethttp.StripPrefix("/doc/", nethttp.FileServer(nethttp.FS(docFS))),
 		Path:      "/doc/",
-		UsePrefix: true,
-		FullPath:  "/doc/swagger",
 	}
 	api.BindHandlerWithAuth(httpSrv, binding)
 }
@@ -139,8 +137,6 @@ func BindMetrics(httpSrv *http.Server, bc *conf.Bootstrap) {
 		BasicAuth: bc.GetMetricsBasicAuth(),
 		Handler:   promhttp.Handler(),
 		Path:      "/metrics",
-		UsePrefix: false,
-		FullPath:  "/metrics",
 	}
 	api.BindHandlerWithAuth(httpSrv, binding)
 }
@@ -179,7 +175,9 @@ func RegisterHTTPService(
 	oauth2Handler := auth.NewOAuth2Handler(c.GetOauth2(), func(ctx http.Context, user auth.User) (string, error) {
 		return "", nil
 	})
-	oauth2Handler.Handler(httpSrv)
+	if err := oauth2Handler.Handler(httpSrv); err != nil {
+		panic(err)
+	}
 	return Servers{newServer("http", httpSrv)}
 }
 
