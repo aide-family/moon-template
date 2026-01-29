@@ -26,6 +26,7 @@ const defaultKubeConfig = "~/.kube/config"
 func init() {
 	globalRegistry.RegisterReportFactory(config.ReportConfig_KUBERNETES, buildReportFromKubernetes)
 	globalRegistry.RegisterReportFactory(config.ReportConfig_ETCD, buildReportFromEtcd)
+	globalRegistry.RegisterReportFactory(config.ReportConfig_REPORT_TYPE_UNKNOWN, newDefaultReport)
 }
 
 type Report interface {
@@ -128,4 +129,30 @@ func buildReportFromEtcd(c *config.ReportConfig) (Report, func() error, error) {
 		return nil, nil, merr.ErrorInternalServer("create etcd client failed: %v", err)
 	}
 	return etcd.New(client, etcd.Namespace(c.GetNamespace())), client.Close, nil
+}
+
+func newDefaultReport(c *config.ReportConfig) (Report, func() error, error) {
+	return &defaultReport{}, func() error { return nil }, nil
+}
+
+type defaultReport struct{}
+
+// Deregister implements [Report].
+func (d *defaultReport) Deregister(ctx context.Context, service *registry.ServiceInstance) error {
+	return nil
+}
+
+// GetService implements [Report].
+func (d *defaultReport) GetService(ctx context.Context, serviceName string) ([]*registry.ServiceInstance, error) {
+	return nil, nil
+}
+
+// Register implements [Report].
+func (d *defaultReport) Register(ctx context.Context, service *registry.ServiceInstance) error {
+	return nil
+}
+
+// Watch implements [Report].
+func (d *defaultReport) Watch(ctx context.Context, serviceName string) (registry.Watcher, error) {
+	return nil, nil
 }

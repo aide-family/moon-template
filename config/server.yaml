@@ -1,11 +1,10 @@
 environment: ${MOON_SOVEREIGN_ENVIRONMENT:PROD}
 enableSwagger: ${MOON_SOVEREIGN_ENABLE_SWAGGER:true}
 enableMetrics: ${MOON_SOVEREIGN_ENABLE_METRICS:true}
+useRandomID: ${MOON_SOVEREIGN_USE_RANDOM_NODE_ID:false}
 
 server:
   name: ${MOON_SOVEREIGN_SERVER_NAME:sovereign}
-  namespace: ${MOON_SOVEREIGN_SERVER_NAMESPACE:moon}
-  useRandomID: ${MOON_SOVEREIGN_USE_RANDOM_NODE_ID:false}
   metadata:
     tag: ${MOON_SOVEREIGN_METADATA_TAG:sovereign}
     repository: ${MOON_SOVEREIGN_METADATA_REPOSITORY:https://github.com/aide-family/sovereign}
@@ -28,69 +27,28 @@ jwt:
   issuer: "${MOON_SOVEREIGN_JWT_ISSUER:sovereign}"
 
 namespaceConfig:
-  driver: ${MOON_SOVEREIGN_NAMESPACE_DRIVER:FILE}
+  driver: ${MOON_SOVEREIGN_NAMESPACE_DRIVER:GORM}
   version: ${MOON_SOVEREIGN_NAMESPACE_VERSION:v1}
   options:
-    '@type': "${MOON_SOVEREIGN_NAMESPACE_OPTIONS_TYPE:type.googleapis.com/sovereign.config.FileConfig}"
-    path: "${MOON_SOVEREIGN_NAMESPACE_OPTIONS_PATH:./.data/namespace}"
-    filename: "${MOON_SOVEREIGN_NAMESPACE_OPTIONS_FILENAME:namespaces.yaml}"
-    storageInterval: "${MOON_SOVEREIGN_NAMESPACE_OPTIONS_STORAGE_INTERVAL:10s}"
-    # '@type': "${MOON_SOVEREIGN_NAMESPACE_OPTIONS_TYPE:type.googleapis.com/sovereign.config.ORMConfig}"
-    # dialector: ${MOON_SOVEREIGN_NAMESPACE_DIALECTOR:MYSQL}
-    # debug: ${MOON_SOVEREIGN_NAMESPACE_DEBUG:false}
-    # useSystemLogger: ${MOON_SOVEREIGN_NAMESPACE_USE_SYSTEM_LOGGER:true}
-    # options:
-    #   '@type': "${MOON_SOVEREIGN_NAMESPACE_MYSQL_OPTIONS_TYPE:type.googleapis.com/sovereign.config.MySQLOptions}"
-    #   username: "${MOON_SOVEREIGN_NAMESPACE_MYSQL_OPTIONS_USERNAME:root}"
-    #   password: "${MOON_SOVEREIGN_NAMESPACE_MYSQL_OPTIONS_PASSWORD:123456}"
-    #   host: "${MOON_SOVEREIGN_NAMESPACE_MYSQL_OPTIONS_HOST:localhost}"
-    #   port: ${MOON_SOVEREIGN_NAMESPACE_MYSQL_OPTIONS_PORT:3306}
-    #   database: ${MOON_SOVEREIGN_NAMESPACE_MYSQL_OPTIONS_DATABASE:sovereign}
-    #   parameters:
-    #     charset: utf8mb4
-    #     parseTime: "true"
-    #     loc: Asia/Shanghai
-    #   dsn: "${MOON_SOVEREIGN_NAMESPACE_SQLITE_OPTIONS_DSN:file:./sovereign.db?cache=shared}"
+    '@type': "${MOON_SOVEREIGN_NAMESPACE_OPTIONS_TYPE:type.googleapis.com/sovereign.config.ORMConfig}"
+    dialector: ${MOON_SOVEREIGN_NAMESPACE_DIALECTOR:SQLITE}
+    debug: ${MOON_SOVEREIGN_NAMESPACE_DEBUG:true}
+    useSystemLogger: ${MOON_SOVEREIGN_NAMESPACE_USE_SYSTEM_LOGGER:true}
+    options:
+      '@type': "${MOON_SOVEREIGN_NAMESPACE_OPTIONS_TYPE:type.googleapis.com/sovereign.config.SQLiteOptions}"
+      dsn: "${MOON_SOVEREIGN_NAMESPACE_SQLITE_OPTIONS_DSN:file:./sovereign.db?cache=shared}"
 
 loginConfig:
   driver: ${MOON_SOVEREIGN_LOGIN_DRIVER:GORM}
   version: ${MOON_SOVEREIGN_LOGIN_VERSION:v1}
   options:
-    # path: "${MOON_SOVEREIGN_LOGIN_OPTIONS_PATH:./data/login}"
-    # filename: "${MOON_SOVEREIGN_LOGIN_OPTIONS_FILENAME:login.yaml}"
-    # storageInterval: "${MOON_SOVEREIGN_LOGIN_OPTIONS_STORAGE_INTERVAL:10s}"
     '@type': "${MOON_SOVEREIGN_LOGIN_OPTIONS_TYPE:type.googleapis.com/sovereign.config.ORMConfig}"
-    dialector: ${MOON_SOVEREIGN_LOGIN_DIALECTOR:MYSQL}
-    debug: ${MOON_SOVEREIGN_LOGIN_DEBUG:false}
+    dialector: ${MOON_SOVEREIGN_LOGIN_DIALECTOR:SQLITE}
+    debug: ${MOON_SOVEREIGN_LOGIN_DEBUG:true}
     useSystemLogger: ${MOON_SOVEREIGN_LOGIN_USE_SYSTEM_LOGGER:true}
     options:
-      '@type': "${MOON_SOVEREIGN_LOGIN_MYSQL_OPTIONS_TYPE:type.googleapis.com/sovereign.config.MySQLOptions}"
-      username: "${MOON_SOVEREIGN_LOGIN_MYSQL_OPTIONS_USERNAME:root}"
-      password: "${MOON_SOVEREIGN_LOGIN_MYSQL_OPTIONS_PASSWORD:123456}"
-      host: "${MOON_SOVEREIGN_LOGIN_MYSQL_OPTIONS_HOST:localhost}"
-      port: ${MOON_SOVEREIGN_LOGIN_MYSQL_OPTIONS_PORT:3306}
-      database: ${MOON_SOVEREIGN_LOGIN_MYSQL_OPTIONS_DATABASE:sovereign}
-      parameters:
-        charset: utf8mb4
-        parseTime: "true"
-        loc: Asia/Shanghai
-    #   dsn: "${MOON_SOVEREIGN_LOGIN_SQLITE_OPTIONS_DSN:file:./login.db?cache=shared}"
-report:
-  reportType: ${MOON_SOVEREIGN_REPORT_TYPE:ETCD}
-  namespace: ${MOON_SOVEREIGN_REPORT_NAMESPACE:moon}
-  options:
-    '@type': "${MOON_SOVEREIGN_REPORT_OPTIONS_TYPE:type.googleapis.com/sovereign.config.ETCDOptions}"
-    endpoints: "${MOON_SOVEREIGN_REPORT_OPTIONS_ENDPOINTS:127.0.0.1:2379}"
-    username: "${MOON_SOVEREIGN_REPORT_OPTIONS_USERNAME:}"
-    password: "${MOON_SOVEREIGN_REPORT_OPTIONS_PASSWORD:}"
-    dialTimeout: "${MOON_SOVEREIGN_REPORT_OPTIONS_DIAL_TIMEOUT:10s}"
-    kubeConfig: "${MOON_SOVEREIGN_REPORT_OPTIONS_KUBE_CONFIG:~/.kube/config}"
-
-cluster:
-  name: ${MOON_SOVEREIGN_CLUSTER_NAME:moon.sovereign.grpc}
-  endpoints: ${MOON_SOVEREIGN_CLUSTER_ENDPOINTS:}
-  timeout: ${MOON_SOVEREIGN_CLUSTER_TIMEOUT:10s}
-  protocol: ${MOON_SOVEREIGN_CLUSTER_PROTOCOL:GRPC}
+      '@type': "${MOON_SOVEREIGN_LOGIN_OPTIONS_TYPE:type.googleapis.com/sovereign.config.SQLiteOptions}"
+      dsn: "${MOON_SOVEREIGN_LOGIN_SQLITE_OPTIONS_DSN:file:./sovereign.db?cache=shared}"
 
 swaggerBasicAuth:
   enabled: ${MOON_SOVEREIGN_SWAGGER_BASIC_AUTH_ENABLED:false}  

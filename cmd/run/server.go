@@ -88,7 +88,7 @@ func (e *Engine) init() *Engine {
 		hello.WithMetadata(serverConf.GetMetadata()),
 		hello.WithName(serverConf.GetName()),
 	}
-	if strings.EqualFold(serverConf.GetUseRandomID(), "true") {
+	if strings.EqualFold(runFlags.GetUseRandomID(), "true") {
 		envOpts = append(envOpts, hello.WithID(strutil.RandomID()))
 	}
 	hello.SetEnvWithOption(envOpts...)
